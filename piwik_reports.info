@@ -1,0 +1,7 @@
+name = Piwik Reports
+description = Adds Piwik reports to Drupal reports section.
+core = 7.x
+package = Statistics
+dependencies[] = piwik
+
+version = "7.x-2.x-dev"
