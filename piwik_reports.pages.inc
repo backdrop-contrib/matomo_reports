@@ -129,7 +129,6 @@ function piwik_reports_overview($form, &$form_state) {
  * @see http://drupal.org/node/1354
  */
 function piwik_reports_overview_submit($form, &$form_state) {
-dsm($form_state);
   $_SESSION['piwik_reports_period'] = $form_state['values']['period'];
 }
 
