@@ -1,5 +1,4 @@
 <?php
-// $Id: visitors-settings.tpl.php,v 1.1.2.9 2010/10/09 15:20:08 hass Exp $
 ?>
 <h2><?php print t('Browser families') ?></h2>
 <div class="content">

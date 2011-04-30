@@ -1,5 +1,4 @@
 <?php
-// $Id: referers-search.tpl.php,v 1.1.2.6 2010/10/09 15:20:08 hass Exp $
 ?>
 <h2><?php print t('Search engines') ?></h2>
 <div class="content">
