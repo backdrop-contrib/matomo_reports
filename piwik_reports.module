@@ -28,7 +28,7 @@ function piwik_reports_help($path, $arg) {
 function piwik_reports_menu() {
   // Reports
   $items['admin/reports/piwik_reports'] = array(
-    'title' => 'Piwik reports',
+    'title' => t('Web analytics'),
     'page callback' => 'piwik_reports_menu_block_page',
     'access arguments' => array('access site reports'),
     'file' => 'piwik_reports.pages.inc',
@@ -36,7 +36,7 @@ function piwik_reports_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/reports/piwik_reports/visitors'] = array(
-    'title' => 'Visitors',
+    'title' => t('Visitors'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','visitors_overview'),
     'access arguments' => array('access site reports'),
@@ -45,7 +45,7 @@ function piwik_reports_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/reports/piwik_reports/visitors/overview'] = array(
-    'title' => 'Overview',
+    'title' => t('Overview'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','visitors_overview'),
     'access arguments' => array('access site reports'),
@@ -54,7 +54,7 @@ function piwik_reports_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/visitors/settings'] = array(
-    'title' => 'Settings',
+    'title' => t('Settings'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','visitors_settings'),
     'access arguments' => array('access site reports'),
@@ -63,7 +63,7 @@ function piwik_reports_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/visitors/times'] = array(
-    'title' => 'Times',
+    'title' => t('Times'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','visitors_times'),
     'access arguments' => array('access site reports'),
@@ -72,7 +72,7 @@ function piwik_reports_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/visitors/locations'] = array(
-    'title' => 'Locations provider',
+    'title' => t('Locations provider'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','visitors_locations'),
     'access arguments' => array('access site reports'),
@@ -81,7 +81,7 @@ function piwik_reports_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/actions'] = array(
-    'title' => 'Actions',
+    'title' => t('Actions'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','actions_pageurls'),
     'access arguments' => array('access site reports'),
@@ -90,7 +90,7 @@ function piwik_reports_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/reports/piwik_reports/actions/pages'] = array(
-    'title' => 'Pages',
+    'title' => t('Pages'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','actions_pageurls'),
     'access arguments' => array('access site reports'),
@@ -99,7 +99,7 @@ function piwik_reports_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/actions/outlinks'] = array(
-    'title' => 'Outlinks',
+    'title' => t('Outlinks'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','actions_outlinks'),
     'access arguments' => array('access site reports'),
@@ -108,7 +108,7 @@ function piwik_reports_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/actions/downloads'] = array(
-    'title' => 'Downloads',
+    'title' => t('Downloads'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','actions_downloads'),
     'access arguments' => array('access site reports'),
@@ -117,7 +117,7 @@ function piwik_reports_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/referers'] = array(
-    'title' => 'Referers',
+    'title' => t('Referers'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','referers_evolution'),
     'access arguments' => array('access site reports'),
@@ -126,7 +126,7 @@ function piwik_reports_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/reports/piwik_reports/referers/evolution'] = array(
-    'title' => 'Evolution',
+    'title' => t('Evolution'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','referers_evolution'),
     'access arguments' => array('access site reports'),
@@ -135,7 +135,7 @@ function piwik_reports_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/referers/search'] = array(
-    'title' => 'Search engines & keywords',
+    'title' => t('Search engines & keywords'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','referers_search'),
     'access arguments' => array('access site reports'),
@@ -144,7 +144,7 @@ function piwik_reports_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/referers/websites'] = array(
-    'title' => 'Websites',
+    'title' => t('Websites'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports','referers_websites'),
     'access arguments' => array('access site reports'),
@@ -242,7 +242,7 @@ function piwik_reports_form_alter(&$form, $form_state, $form_id) {
       $form['piwik_reports'] = array(
         '#type' => 'fieldset',
         '#title' => t('Piwik reports token_auth'),
-        '#weight' => 3,
+        '#weight' => 0,
         '#description' => t('To see piwik reports in Drupal you need a <strong>token_auth</strong> value. You can find it in the  <strong>Users</strong> tab under the <strong>Settings</strong> link in your Piwik account.'),
        '#collapsible' => TRUE,
        '#collapsed' => TRUE,
