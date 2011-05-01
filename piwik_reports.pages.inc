@@ -84,6 +84,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
   if (in_array($report, array('visitors_overview','referers_evolution'))) {
     $now = _piwik_reports_select_period(0);
     if ($period == 1) {
+      $date = _piwik_reports_select_period($period);
       $now = $date;
     }
     else {
@@ -203,7 +204,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
     break;
   }
 
-  if (in_array($report, array('actions_pageurls','actions_outlinks','actions_downloads','referers_evolution','referers_websites'))) {
+  if (in_array($report, array('actions_pageurls','actions_outlinks','actions_downloads','referers_websites'))) {
     drupal_add_js(drupal_get_path('module', 'piwik_reports') . '/piwik_reports.js');
     // Build the data URL with all params.
     $data1_url = $piwik_url . 'index.php?' . drupal_http_build_query($data1_params) . '&jsoncallback=?';
