@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file
+ */
 ?>
 <h2><?php
   switch ($period) {

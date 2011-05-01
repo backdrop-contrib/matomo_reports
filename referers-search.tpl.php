@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file
+ */
 ?>
 <h2><?php print t('Search engines') ?></h2>
 <div class="content">

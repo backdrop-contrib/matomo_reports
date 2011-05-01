@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file
+ */
 ?>
 <h2><?php print t('Browser families') ?></h2>
 <div class="content">

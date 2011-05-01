@@ -67,7 +67,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
   // Get basic configuration variables.
   $piwik_url = variable_get('piwik_url_http', '');
   $piwik_site_id = variable_get('piwik_site_id', '');
-  $piwik_auth = (variable_get('piwik_token_auth','') ? variable_get('piwik_token_auth','') : $user->data['piwik']['piwik_token_auth']);
+  $piwik_auth = (variable_get('piwik_token_auth', '') ? variable_get('piwik_token_auth', '') : $user->data['piwik']['piwik_token_auth']);
   $period = $_SESSION['piwik_reports_period'];
 
   if ($period == 1) {
@@ -81,7 +81,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
   }
   $period_name = _piwik_reports_get_period_name($period);
 
-  if (in_array($report, array('visitors_overview','referers_evolution'))) {
+  if (in_array($report, array('visitors_overview', 'referers_evolution'))) {
     $now = _piwik_reports_select_period(0);
     if ($period == 1) {
       $date = _piwik_reports_select_period($period);
@@ -91,7 +91,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
       // Otherwise it returns the start date value.
       $date = _piwik_reports_select_period($period);
     }
-    
+
     $date = $date . ',' . $now;
 
     // Granuarity of measuring points in graph.
@@ -114,7 +114,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
   if (!empty($piwik_auth)) {
     $data1_params['token_auth'] = $piwik_auth;
   }
-  
+
   switch ($report) {
     case 'visitors_overview':
       $data1_params['module'] = 'VisitsSummary';
@@ -187,11 +187,11 @@ function piwik_reports_reports($form, &$form_state, $report) {
     break;
     case 'referers_search':
       $data2_params = $data1_params;
-      
+
       $data1_params['module'] = 'Referers';
       $data1_params['action'] = 'getSearchEngines';
       $data1_params['viewDataTable'] = 'generateDataChartPie';
-      
+
       $data2_params['module'] = 'API';
       $data2_params['method'] = 'Referers.getKeywords';
       $data2_params['format'] = 'JSON';
@@ -204,7 +204,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
     break;
   }
 
-  if (in_array($report, array('actions_pageurls','actions_outlinks','actions_downloads','referers_websites'))) {
+  if (in_array($report, array('actions_pageurls', 'actions_outlinks', 'actions_downloads', 'referers_websites'))) {
     drupal_add_js(drupal_get_path('module', 'piwik_reports') . '/piwik_reports.js');
     // Build the data URL with all params.
     $data1_url = $piwik_url . 'index.php?' . drupal_http_build_query($data1_params) . '&jsoncallback=?';
@@ -219,20 +219,21 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $theme_args['data2_url'] = rawurlencode($piwik_url . '/index.php?' . drupal_http_build_query($data2_params));
       $theme_args['data3_url'] = rawurlencode($piwik_url . '/index.php?' . drupal_http_build_query($data3_params));
       $theme_args['data4_url'] = rawurlencode($piwik_url . '/index.php?' . drupal_http_build_query($data4_params));
-    } elseif ($report == 'visitors_overview') {
+    }
+    elseif ($report == 'visitors_overview') {
       $theme_args['period'] = $period_name;
     }
     // Render HTML code.
     $output = theme($report, $theme_args);
   }
-  
+
   $form = piwik_reports_dateselect_form();
 
   $form['content'] = array(
     '#type' => 'item',
     '#markup' => $output,
   );
-  
+
   if ($report == 'referers_search') {
     drupal_add_js(drupal_get_path('module', 'piwik_reports') . '/piwik_reports.js');
     // Build the data URL with all params.

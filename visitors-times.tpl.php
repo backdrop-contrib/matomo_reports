@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file
+ */
 ?>
 <h2><?php print t('Visit per local time') ?></h2>
 <div class="content">
