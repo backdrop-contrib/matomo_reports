@@ -67,7 +67,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
   // Get basic configuration variables.
   $piwik_url = variable_get('piwik_url_http', '');
   $piwik_site_id = variable_get('piwik_site_id', '');
-  $piwik_auth = $user->data['piwik']['piwik_token_auth'];
+  $piwik_auth = (variable_get('piwik_token_auth','') ? variable_get('piwik_token_auth','') : $user->data['piwik']['piwik_token_auth']);
   $period = $_SESSION['piwik_reports_period'];
 
   if ($period == 1) {
