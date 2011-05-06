@@ -2,7 +2,10 @@
 /**
  * @file
  * Default implementation of the visitors times report template.
- * TODO: add available variables.
+ *
+ * Available variables:
+ * - $piwik_url: piwik server base url.
+ * - $data1_url: complete url with params to get selected report.
  */
 ?>
 <h2><?php print t('Visit per local time') ?></h2>

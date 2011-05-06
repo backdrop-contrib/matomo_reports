@@ -2,7 +2,13 @@
 /**
  * @file
  * Default implementation of the visitors settings reports template.
- * TODO: add available variables.
+ *
+ * Available variables:
+ * - $piwik_url: piwik server base url.
+ * - $data1_url: complete url with params to get selected report.
+ * - $data2_url: complete url with params to get selected report.
+ * - $data3_url: complete url with params to get selected report.
+ * - $data4_url: complete url with params to get selected report.
  */
 ?>
 <h2><?php print t('Browser families') ?></h2>

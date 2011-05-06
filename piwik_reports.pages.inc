@@ -21,8 +21,7 @@ function piwik_reports_menu_block_page() {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Return the form where to select the report period.
  */
 function piwik_reports_dateselect_form() {
 
@@ -58,8 +57,15 @@ function piwik_reports_dateselect_form() {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Return the $form that handles piwik reports
+ *
+ * @param $form
+ * @param $form_state
+ *   see form api.
+ * @param $report
+ *   The report name.
+ *
+ * @return
  */
 function piwik_reports_reports($form, &$form_state, $report) {
   global $user;
@@ -249,21 +255,21 @@ function piwik_reports_reports($form, &$form_state, $report) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Reports form submit function
  */
 function piwik_reports_reports_submit($form, &$form_state) {
   $_SESSION['piwik_reports_period'] = $form_state['values']['period'];
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Helper function that return the starting and ending dates according to the
+ * selected period.
+ *
+ * @param $period
+ *    selected period 
+ * @return
+ *    array with starting and ending date
  */
-function piwik_reports_websites_submit($form, &$form_state) {
-  $_SESSION['piwik_reports_period'] = $form_state['values']['period'];
-}
-
 function _piwik_reports_select_period($period) {
   switch ($period) {
     case 0:
@@ -293,6 +299,14 @@ function _piwik_reports_select_period($period) {
   return $date;
 }
 
+/**
+ * Helper function that return the name of the selected period.
+ *
+ * @param $period
+ *    selected period 
+ * @return
+ *    name
+ */
 function _piwik_reports_get_period_name($period) {
   // Possible periods are day, week, month, year.
   switch ($period) {
