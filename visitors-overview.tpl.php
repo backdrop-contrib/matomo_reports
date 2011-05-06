@@ -1,6 +1,8 @@
 <?php
 /**
  * @file
+ * Default implementation of the visitors overview report template.
+ * TODO: add available variables.
  */
 ?>
 <h2><?php

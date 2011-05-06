@@ -1,6 +1,8 @@
 <?php
 /**
  * @file
+ * Default implementation of the referers search report template.
+ * TODO: add available variables.
  */
 ?>
 <h2><?php print t('Search engines') ?></h2>

@@ -1,6 +1,8 @@
 <?php
 /**
  * @file
+ * Default implementation of the visitors times report template.
+ * TODO: add available variables.
  */
 ?>
 <h2><?php print t('Visit per local time') ?></h2>

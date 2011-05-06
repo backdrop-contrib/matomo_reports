@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Drupal Module: Piwik Reports
+ * Reports callback for Piwik Reports
  */
 
 /**

@@ -1,6 +1,8 @@
 <?php
 /**
  * @file
+ * Default implementation of the referers evolution report template.
+ * TODO: add available variables.
  */
 ?>
 <div class="content">

@@ -2,14 +2,11 @@
 
 /**
  * @file
- * Drupal Module: Piwik Reports
- * Sponsored by IO1, http://www.io1.biz
- * All code is released under the GNU General Public License.
+ * Defines features and functions common to Piwik Reports
  */
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Implements hook_help().
  */
 function piwik_reports_help($path, $arg) {
   global $user;

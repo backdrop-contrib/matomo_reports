@@ -1,6 +1,8 @@
 <?php
 /**
  * @file
+ * Default implementation of the visitors settings reports template.
+ * TODO: add available variables.
  */
 ?>
 <h2><?php print t('Browser families') ?></h2>
