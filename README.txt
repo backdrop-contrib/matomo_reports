@@ -8,16 +8,16 @@ Maintainer:  xlyz, xlyz@tiscali.it
 Add a piwik reports section where imports key traffic information from your 
 piwik server.
 
-Poject homepage: http://drupal.org/sandbox/xlyz/1143350   (atm sandboxed)
+Poject homepage: http://drupal.org/project/piwik_reports
 
-Issues: http://drupal.org/project/issues/1143350 
+Issues: http://drupal.org/project/issues/piwik_reports
 
 
 Installation
 ------------
 
  * This module depends on Piwik Web Analytics 
-   http://drupal.org/project/commerce
+   http://drupal.org/project/piwik
 
  * Copy the whole piwik_reports directory to your modules directory
    (e.g. DRUPAL_ROOT/sites/all/modules) and activate it in the modules page
