@@ -22,11 +22,15 @@ function piwik_reports_help($path, $arg) {
 /**
  * Implements hook_permission().
  */
-function piwik__reports_permission() {
+function piwik_reports_permission() {
   return array(
     'access piwik reports' => array(
       'title' => t('Piwik reports access'),
       'description' => t('Allow access to Piwik reports.'),
+    ),
+    'administer piwik reports' => array(
+      'title' => t('Administer Piwik reports'),
+      'description' => t('Perform basic configuration tasks for Piwik reports.'),
     ),
   );
 }
@@ -161,8 +165,64 @@ function piwik_reports_menu() {
     'weight' => 3,
     'type' => MENU_LOCAL_TASK,
   );
-
+  // if piwik is installed group with it, otherwise not
+  if (module_exists('piwik')) {
+    $items['admin/config/system/piwik/tracking'] = array(
+      'title' => 'Tracking',
+      'type' => MENU_NORMAL_ITEM,
+      'description' => 'Configure the settings used to generate your Piwik tracking code.',
+      'page callback' => 'drupal_get_form',
+      'access arguments' => array('administer piwik'),
+      'page arguments' => array('piwik_admin_settings_form'),
+      'file path' => drupal_get_path('module', 'piwik'),
+      'file' => 'piwik.admin.inc',
+    );
+    $items['admin/config/system/piwik/reports'] = array(
+      'title' => 'Reports',
+      'description' => 'Configure the settings for your Piwik reports.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('piwik_reports_admin_settings_form'),
+      'access arguments' => array('administer piwik reports'),
+      'type' => MENU_NORMAL_ITEM,
+      'weight' => 10,
+    );
+  }
+  else {
+    $items['admin/config/system/piwik_reports'] = array(
+      'title' => 'Piwik reports',
+      'description' => 'Configure the settings for your Piwik reports.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('piwik_reports_admin_settings_form'),
+      'access arguments' => array('administer piwik reports'),
+      'type' => MENU_NORMAL_ITEM,
+      'file' => 'piwik.admin.inc',
+    );
+  }
+  $items['admin/reports/piwik_reports/referers/websites'] = array(
+    'title' => 'Websites',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('piwik_reports_reports', 'referers_websites'),
+    'access arguments' => array('access piwik reports'),
+    'file' => 'piwik_reports.pages.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+  );
   return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function piwik_reports_menu_alter(&$items) {
+  if (module_exists('piwik')) {
+    $items['admin/config/system/piwik'] = array(
+      'title' => 'Piwik',
+      'description' => 'Configure the settings for Piwik.',
+      'access arguments' => array(array('administer piwik', 'administer piwik reports')),
+      'access callback' => 'piwik_reports_any_access',
+      'type' => MENU_NORMAL_ITEM,
+    );
+  }
 }
 
 /**
@@ -271,6 +331,14 @@ function piwik_reports_form_alter(&$form, $form_state, $form_id) {
 /**
  * Implements hook_user_presave().
  */
+function piwik_reports_any_access($arguments) {
+  foreach ($arguments as $perm)
+  if (user_access($perm)) return true;
+}
+
+/**
+ * Implements hook_user_presave().
+ */
 function piwik_reports_user_presave(&$edit, $account, $category) {
 
   if (isset($edit['piwik']['piwik_token_auth'])) {
@@ -278,4 +346,13 @@ function piwik_reports_user_presave(&$edit, $account, $category) {
   }
 }
 
+function piwik_reports_admin_settings_form($form_state) {
 
+  $form['account'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('General settings'),
+  );
+
+
+return system_settings_form($form);
+}
