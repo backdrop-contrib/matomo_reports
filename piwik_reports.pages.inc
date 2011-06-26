@@ -128,59 +128,62 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
   switch ($report) {
     case 'visitors_overview':
+      $title1 = t('Visits trend');
       $data1_params['columns[]'] = 'nb_visits';
       $data1_params['moduleToWidgetize'] = 'VisitsSummary';
       $data1_params['actionToWidgetize'] = 'getEvolutionGraph';
     break;
     case 'visitors_times':
+      $title1 = t('Visits by local time');
       $data1_params['moduleToWidgetize'] = 'VisitTime';
       $data1_params['actionToWidgetize'] = 'getVisitInformationPerLocalTime';
     break;
     case 'visitors_settings':
-      $data1_params['filter_limit'] = 5;
-      $data1_params['filter_sort_column'] = 'nb_uniq_visitors';
-      $data1_params['filter_sort_order'] = 'desc';
-      $data1_params['viewDataTable'] = 'generateDataChartPie';
+      $data1_params['filter_limit'] = 6;
 
       $data2_params = $data1_params;
       $data3_params = $data1_params;
       $data4_params = $data1_params;
       // Browser families
-      $data1_params['action'] = 'getBrowserType';
-      // Client configurations
-      $data2_params['action'] = 'getConfiguration';
-      $data2_params['enable_sort'] = 1;
-      // Operating systems
-      $data3_params['action'] = 'getOS';
-      $data3_params['filter_limit'] = 10;
+      $title1 = t('Browser families');
+      $data1_params['moduleToWidgetize'] = 'UserSettings';
+      $data1_params['actionToWidgetize'] = 'getBrowserType';
       // Screen resolutions
-      $data4_params['action'] = 'getResolution';
-      $data4_params['filter_limit'] = 10;
+      $title2 = t('Screen resolution');
+      $data2_params['moduleToWidgetize'] = 'UserSettings';
+      $data2_params['actionToWidgetize'] = 'getConfiguration';
+      // Operating systems
+      $title3 = t('Operating system');
+      $data3_params['moduleToWidgetize'] = 'UserSettings';
+      $data3_params['actionToWidgetize'] = 'getOS';
+      // Client configurations
+      $title4 = t('Client configuration');
+      $data4_params['moduleToWidgetize'] = 'UserSettings';
+      $data4_params['actionToWidgetize'] = 'getResolution';
     break;
     case 'visitors_locations':
-      $data1_params['module'] = 'UserCountry';
-      $data1_params['action'] = 'getCountry';
-      // FIXME: filter_limit seems broken.
-      $data1_params['filter_limit'] = 10;
-      $data1_params['viewDataTable'] = 'generateDataChartPie';
+      $title1 = t('Visitors countries');
+      $data1_params['moduleToWidgetize'] = 'UserCountry';
+      $data1_params['actionToWidgetize'] = 'getCountry';
+      $data1_params['filter_limit'] = 15;
     break;
     case 'actions_pageurls':
-      $data1_params['module'] = 'API';
-      $data1_params['method'] = 'Actions.getPageUrls';
-      $data1_params['format'] = 'JSON';
-      unset($data1_params['loading']);
+      $title1 = t('Page visits');
+      $data1_params['moduleToWidgetize'] = 'Actions';
+      $data1_params['actionToWidgetize'] = 'getPageUrls';
+      $data1_params['filter_limit'] = 15;
     break;
     case 'actions_outlinks':
-      $data1_params['module'] = 'API';
-      $data1_params['method'] = 'Actions.getOutlinks';
-      $data1_params['format'] = 'JSON';
-      unset($data1_params['loading']);
+      $title1 = t('');
+      $data1_params['moduleToWidgetize'] = 'Actions';
+      $data1_params['actionToWidgetize'] = 'getOutlinks';
+      $data1_params['filter_limit'] = 15;
     break;
     case 'actions_downloads':
-      $data1_params['module'] = 'API';
-      $data1_params['method'] = 'Actions.getDownloads';
-      $data1_params['format'] = 'JSON';
-      unset($data1_params['loading']);
+      $title1 = t('');
+      $data1_params['moduleToWidgetize'] = 'Actions';
+      $data1_params['actionToWidgetize'] = 'getDownloads';
+      $data1_params['filter_limit'] = 15;
     break;
     case 'referers_evolution':
       $data1_params['module'] = 'Referers';
@@ -209,27 +212,16 @@ function piwik_reports_reports($form, &$form_state, $report) {
     break;
   }
 
-  if (in_array($report, array('actions_pageurls', 'actions_outlinks', 'actions_downloads', 'referers_websites'))) {
-    drupal_add_js(drupal_get_path('module', 'piwik_reports') . '/piwik_reports.js');
-    // Build the data URL with all params.
-    $data1_url = $piwik_url . 'index.php?' . drupal_http_build_query($data1_params) . '&jsoncallback=?';
-    drupal_add_js(array('piwik_reports' => array('url' => $data1_url, 'page' => 'actions')), 'setting');
-    $output = '<div id="pagestable"></div>';
+  // Build the data URL with all params and urlencode it.
+  $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data1_params), 'title' => $title1,);
+   if ($report == 'visitors_settings') {
+    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data2_params), 'title' => $title2,);
+    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data3_params), 'title' => $title3,);
+    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data4_params), 'title' => $title4,);
   }
-  else {
-    // Build the data URL with all params and urlencode it.
-    $theme_args['data_url'][] = ($piwik_url . 'index.php?' . drupal_http_build_query($data1_params));
-    if ($report == 'visitors_settings') {
-      $theme_args['data_url'][] = ($piwik_url . 'index.php?' . drupal_http_build_query($data2_params));
-      $theme_args['data_url'][] = ($piwik_url . 'index.php?' . drupal_http_build_query($data3_params));
-      $theme_args['data_url'][] = ($piwik_url . 'index.php?' . drupal_http_build_query($data4_params));
-    }
-    elseif ($report == 'visitors_overview') {
-      $theme_args['period'] = $period_name;
-    }
-    // Render HTML code.
-    $output = theme('piwik_reports', $theme_args);
-  }
+
+  // Render HTML code.
+  $output = theme('piwik_reports', $theme_args);
 
   $form = piwik_reports_dateselect_form();
 
