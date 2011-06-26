@@ -20,6 +20,18 @@ function piwik_reports_help($path, $arg) {
 }
 
 /**
+ * Implements hook_permission().
+ */
+function piwik__reports_permission() {
+  return array(
+    'access piwik reports' => array(
+      'title' => t('Piwik reports access'),
+      'description' => t('Allow access to Piwik reports.'),
+    ),
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function piwik_reports_menu() {
@@ -27,7 +39,7 @@ function piwik_reports_menu() {
   $items['admin/reports/piwik_reports'] = array(
     'title' => 'Piwik web analytics',
     'page callback' => 'piwik_reports_menu_block_page',
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'description' => 'Reports on your website visitors, your popular pages, the search engines keywords they used... and so much more.',
     'type' => MENU_NORMAL_ITEM,
@@ -36,7 +48,7 @@ function piwik_reports_menu() {
     'title' => 'Visitors',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'visitors_overview'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 1,
     'type' => MENU_NORMAL_ITEM,
@@ -45,7 +57,7 @@ function piwik_reports_menu() {
     'title' => 'Overview',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'visitors_overview'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 1,
     'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -54,7 +66,7 @@ function piwik_reports_menu() {
     'title' => 'Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'visitors_settings'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 2,
     'type' => MENU_LOCAL_TASK,
@@ -63,7 +75,7 @@ function piwik_reports_menu() {
     'title' => 'Times',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'visitors_times'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 3,
     'type' => MENU_LOCAL_TASK,
@@ -72,7 +84,7 @@ function piwik_reports_menu() {
     'title' => 'Locations provider',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'visitors_locations'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 4,
     'type' => MENU_LOCAL_TASK,
@@ -81,7 +93,7 @@ function piwik_reports_menu() {
     'title' => 'Actions',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'actions_pageurls'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 2,
     'type' => MENU_NORMAL_ITEM,
@@ -90,7 +102,7 @@ function piwik_reports_menu() {
     'title' => 'Pages',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'actions_pageurls'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 1,
     'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -99,7 +111,7 @@ function piwik_reports_menu() {
     'title' => 'Outlinks',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'actions_outlinks'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 2,
     'type' => MENU_LOCAL_TASK,
@@ -108,7 +120,7 @@ function piwik_reports_menu() {
     'title' => 'Downloads',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'actions_downloads'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 3,
     'type' => MENU_LOCAL_TASK,
@@ -117,7 +129,7 @@ function piwik_reports_menu() {
     'title' => 'Referers',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'referers_evolution'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 3,
     'type' => MENU_NORMAL_ITEM,
@@ -126,7 +138,7 @@ function piwik_reports_menu() {
     'title' => 'Evolution',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'referers_evolution'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 1,
     'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -135,7 +147,7 @@ function piwik_reports_menu() {
     'title' => 'Search engines & keywords',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'referers_search'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 2,
     'type' => MENU_LOCAL_TASK,
@@ -144,7 +156,7 @@ function piwik_reports_menu() {
     'title' => 'Websites',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'referers_websites'),
-    'access arguments' => array('access site reports'),
+    'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 3,
     'type' => MENU_LOCAL_TASK,
@@ -212,7 +224,7 @@ function piwik_reports_theme() {
  */
 function piwik_reports_form_alter(&$form, $form_state, $form_id) {
   // Extend the form in "user/{userid}/edit/account".
-  if ($form_id == 'user_profile_form' && $form['#user_category'] == 'account' && user_access('access site reports') && (variable_get('piwik_token_auth', '') == '')) {
+  if ($form_id == 'user_profile_form' && $form['#user_category'] == 'account' && user_access('access piwik reports') && (variable_get('piwik_token_auth', '') == '')) {
     global $user;
     // Make sure the fieldset is also visible if user do not have permission
     // on the form field "Enable user tracking" in the main piwik module.
