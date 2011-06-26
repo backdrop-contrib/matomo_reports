@@ -63,9 +63,9 @@ function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
   $options = array();
   $sites = piwik_reports_get_sites($piwik_auth);
   if (!isset($_SESSION['piwik_reports_site'])) $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
-  $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites',''));
+  $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites', ''));
   foreach ($sites as $site) {
-    if (in_array($site['idsite'],$allowed_keys)) {
+    if (in_array($site['idsite'], $allowed_keys)) {
       $options[$site['idsite']] = $site['name'];
     }
   }
@@ -212,20 +212,16 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[0]['actionToWidgetize'] = 'getWebsites';
     break;
   }
-
   // Build the data URL with all params and urlencode it.
   foreach ($data_params as $key => $data) {
-    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data), 'title' => $title[$key],);
+    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data), 'title' => $title[$key], );
   }
-
   // Render HTML code.
   $output = theme('piwik_reports', $theme_args);
-
   $form['content'] = array(
     '#type' => 'item',
     '#markup' => $output,
   );
-
   return $form;
 }
 
@@ -242,7 +238,7 @@ function piwik_reports_reports_submit($form, &$form_state) {
  * selected period.
  *
  * @param $period
- *    selected period 
+ *    selected period
  * @return
  *    array with starting and ending date
  */
@@ -279,7 +275,7 @@ function _piwik_reports_select_period($period) {
  * Helper function that return the name of the selected period.
  *
  * @param $period
- *    selected period 
+ *    selected period
  * @return
  *    name
  */

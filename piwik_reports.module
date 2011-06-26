@@ -264,7 +264,7 @@ function piwik_reports_form_alter(&$form, $form_state, $form_id) {
   );
   }
   elseif ($form_id == 'piwik_admin_settings_form') {
-    drupal_set_title('Piwik tracking');
+    drupal_set_title(t('Piwik tracking'));
   }
 }
 
@@ -278,7 +278,7 @@ function piwik_reports_form_alter(&$form, $form_state, $form_id) {
  */
 function piwik_reports_any_access($arguments) {
   foreach ($arguments as $perm)
-  if (user_access($perm)) return true;
+  if (user_access($perm)) return TRUE;
 }
 
 /**
@@ -300,13 +300,13 @@ function piwik_reports_user_presave(&$edit, $account, $category) {
  * @return $form
  */
 function piwik_reports_admin_settings_form($form_state) {
-  drupal_set_title('Piwik reports');
+  drupal_set_title(t('Piwik reports'));
   $piwik_installed = module_exists('piwik');
   $form['piwik_reports_server'] = array(
     '#type' => 'fieldset',
     '#title' => t('Piwik report server'),
     '#weight' => 1,
-    '#collapsible' => true,
+    '#collapsible' => TRUE,
     '#collapsed' => $piwik_installed,
   );
   if ($piwik_installed) {
@@ -340,8 +340,8 @@ function piwik_reports_admin_settings_form($form_state) {
     '#type' => 'fieldset',
     '#title' => t('Allowed sites'),
     '#weight' => 10,
-    '#collapsible' => true,
-    '#collapsed' => true,
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
     '#description' => t('List sites you want restrict your users access to.'),
   );
   if (variable_get('piwik_reports_token_auth', '') != '') {
@@ -350,9 +350,9 @@ function piwik_reports_admin_settings_form($form_state) {
       $form['piwik_reports_sites']['piwik_reports_allowed_sites'] = array(
         '#type' => 'textfield',
         '#weight' => 10,
-        '#collapsible' => true,
+        '#collapsible' => TRUE,
         '#default_value' => variable_get('piwik_reports_allowed_sites', ''),
-        '#collapsed' => true,
+        '#collapsed' => TRUE,
         '#description' => t('List accessible sites id separated by a comma. Example: "1,4,12". Leave blank to let users see all sites accessible on piwik server with current token auth. Sites statistics that can be accessed with current token_auth are:'),
       );
       foreach ($sites as $site) {
