@@ -6,7 +6,7 @@
  * Available variables:
  * - $piwik_url: piwik server base url.
  * - $data1_url: complete url with params to get selected report.
- */
+ */dsm($data1_url); dsm($piwik_url);
 ?>
 <h2><?php
   switch ($period) {
@@ -18,10 +18,4 @@
       print t('Visitors in time period by day');
   }
 ?></h2>
-<div class="content">
-  <object width="100%" height="300" type="application/x-shockwave-flash" data="<?php print $piwik_url ?>/libs/open-flash-chart/open-flash-chart.swf?piwik=1.4" id="VisitsSummarygetLastVisitsGraphChart">
-    <param name="allowScriptAccess" value="always"/>
-    <param name="wmode" value="opaque"/>
-    <param name="flashvars" value="data-file=<?php print $data1_url ?>"/>
-  </object>
-</div>
+<div id="widgetIframe"><iframe width="100%" height="350" <?php print 'src="' . $data1_url; ?>" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>

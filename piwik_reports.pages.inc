@@ -71,9 +71,9 @@ function piwik_reports_reports($form, &$form_state, $report) {
   global $user;
 
   // Get basic configuration variables.
-  $piwik_url = variable_get('piwik_url_http', '');
-  $piwik_site_id = variable_get('piwik_site_id', '');
-  $piwik_auth = (variable_get('piwik_token_auth', '') ? variable_get('piwik_token_auth', '') : $user->data['piwik']['piwik_token_auth']);
+  $piwik_auth = (variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']);
+  $piwik_url = piwik_reports_get_url();
+  $piwik_site_id = 3;//variable_get('piwik_site_id', '');
   $period = $_SESSION['piwik_reports_period'];
 
   if ($period == 1) {
@@ -87,7 +87,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
   }
   $period_name = _piwik_reports_get_period_name($period);
 
-  if (in_array($report, array('visitors_overview', 'referers_evolution'))) {
+/*  if (in_array($report, array('visitors_overview', 'referers_evolution'))) {
     $now = _piwik_reports_select_period(0);
     if ($period == 1) {
       $date = _piwik_reports_select_period($period);
@@ -109,35 +109,34 @@ function piwik_reports_reports($form, &$form_state, $report) {
       default:
         $period_name = "day";
     }
-  }
+  }*/
 
   // Create an array of URL parameters for easier maintenance.
   $data1_params = array();
   $data1_params['idSite'] = $piwik_site_id;
   $data1_params['date'] = $date;
   $data1_params['period'] = $period_name;
-  $data1_params['loading'] = t('Loading data...');
+  $data1_params['disableLink'] = 1;
+  $data1_params['module'] = 'Widgetize';
+  $data1_params['action'] = 'iframe';
+  $data1_params['disableLink'] = 1;
+  $data1_params['widget'] = 1;
+ // $data1_params['loading'] = t('Loading data...');
   if (!empty($piwik_auth)) {
     $data1_params['token_auth'] = $piwik_auth;
   }
 
   switch ($report) {
     case 'visitors_overview':
-      $data1_params['module'] = 'VisitsSummary';
-      $data1_params['action'] = 'getEvolutionGraph';
       $data1_params['columns[]'] = 'nb_visits';
       $data1_params['moduleToWidgetize'] = 'VisitsSummary';
       $data1_params['actionToWidgetize'] = 'getEvolutionGraph';
-      $data1_params['disableLink'] = 1;
-      $data1_params['viewDataTable'] = 'generateDataChartEvolution';
     break;
     case 'visitors_times':
-      $data1_params['module'] = 'VisitTime';
-      $data1_params['action'] = 'getVisitInformationPerLocalTime';
-      $data1_params['viewDataTable'] = 'generateDataChartVerticalBar';
+      $data1_params['moduleToWidgetize'] = 'VisitTime';
+      $data1_params['actionToWidgetize'] = 'getVisitInformationPerLocalTime';
     break;
     case 'visitors_settings':
-      $data1_params['module'] = 'UserSettings';
       $data1_params['filter_limit'] = 5;
       $data1_params['filter_sort_column'] = 'nb_uniq_visitors';
       $data1_params['filter_sort_order'] = 'desc';
@@ -219,18 +218,17 @@ function piwik_reports_reports($form, &$form_state, $report) {
   }
   else {
     // Build the data URL with all params and urlencode it.
-    $theme_args['piwik_url'] = $piwik_url;
-    $theme_args['data1_url'] = rawurlencode($piwik_url . '/index.php?' . drupal_http_build_query($data1_params));
+    $theme_args['data_url'][] = ($piwik_url . 'index.php?' . drupal_http_build_query($data1_params));
     if ($report == 'visitors_settings') {
-      $theme_args['data2_url'] = rawurlencode($piwik_url . '/index.php?' . drupal_http_build_query($data2_params));
-      $theme_args['data3_url'] = rawurlencode($piwik_url . '/index.php?' . drupal_http_build_query($data3_params));
-      $theme_args['data4_url'] = rawurlencode($piwik_url . '/index.php?' . drupal_http_build_query($data4_params));
+      $theme_args['data_url'][] = ($piwik_url . 'index.php?' . drupal_http_build_query($data2_params));
+      $theme_args['data_url'][] = ($piwik_url . 'index.php?' . drupal_http_build_query($data3_params));
+      $theme_args['data_url'][] = ($piwik_url . 'index.php?' . drupal_http_build_query($data4_params));
     }
     elseif ($report == 'visitors_overview') {
       $theme_args['period'] = $period_name;
     }
     // Render HTML code.
-    $output = theme($report, $theme_args);
+    $output = theme('piwik_reports', $theme_args);
   }
 
   $form = piwik_reports_dateselect_form();

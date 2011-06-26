@@ -230,50 +230,11 @@ function piwik_reports_menu_alter(&$items) {
  */
 function piwik_reports_theme() {
   return array(
-    'visitors_overview' => array(
-      'template' => 'visitors-overview',
+    'piwik_reports' => array(
+      'template' => 'piwik-reports',
       'variables' => array(
-        'piwik_url' => NULL,
-        'data1_url' => NULL,
+        'data_url' => NULL,
         'period' => NULL,
-      ),
-    ),
-    'visitors_settings' => array(
-      'template' => 'visitors-settings',
-      'variables' => array(
-        'piwik_url' => NULL,
-        'data1_url' => NULL,
-        'data2_url' => NULL,
-        'data3_url' => NULL,
-        'data4_url' => NULL,
-      ),
-    ),
-    'visitors_times' => array(
-      'template' => 'visitors-times',
-      'variables' => array(
-        'piwik_url' => NULL,
-        'data1_url' => NULL,
-      ),
-    ),
-    'visitors_locations' => array(
-      'template' => 'visitors-locations',
-      'variables' => array(
-        'piwik_url' => NULL,
-        'data1_url' => NULL,
-      ),
-    ),
-    'referers_evolution' => array(
-      'template' => 'referers-evolution',
-      'variables' => array(
-        'piwik_url' => NULL,
-        'data1_url' => NULL,
-      ),
-    ),
-    'referers_search' => array(
-      'template' => 'referers-search',
-      'variables' => array(
-        'piwik_url' => NULL,
-        'data1_url' => NULL,
       ),
     ),
   );
@@ -384,7 +345,7 @@ function piwik_reports_admin_settings_form($form_state) {
     '#description' => t('List sites you want restrict your users access to.'),
   );
   if (variable_get('piwik_reports_token_auth', '') != '') {
-    $sites = piwik_reports_get_sites();
+    $sites = piwik_reports_get_sites(variable_get('piwik_reports_token_auth', ''));
     if (is_array($sites) && count($sites)) {
       $form['piwik_reports_sites']['piwik_reports_allowed_sites'] = array(
         '#type' => 'textfield',
@@ -411,28 +372,26 @@ function piwik_reports_admin_settings_form($form_state) {
 /**
  * Return a list of sites which statistic are accessible on piwik server.
  *
- * @param
- *   see form api.
+ * @param $token_auth
+ *   Piwik server token auth.
  *
  * @return $sites
  */
-function piwik_reports_get_sites() {
-  $result = drupal_http_request(piwik_reports_get_url() . 
-    'index.php?module=API&method=SitesManager.getSitesWithAtLeastViewAccess&format=JSON&token_auth=' .
-    variable_get('piwik_reports_token_auth', '')
-  );
+function piwik_reports_get_sites($token_auth) {
+  // TODO: shall I cache this?
+  $result = drupal_http_request(piwik_reports_get_url() . 'index.php?module=API&method=SitesManager.getSitesWithAtLeastViewAccess&format=JSON&token_auth=' . $token_auth);
   $sites = drupal_json_decode($result->data);
   return $sites;
 }
 
 /**
- * Return a list of sites which statistic are accessible on piwik server.
+ * Return Piwik server url.
  *
  * @return $url
  */
 function piwik_reports_get_url() {
   $url = variable_get('piwik_reports_url_http', '');
-  if ($url == '' || !isset($url)) {
+  if ($url == '') {
     if (module_exists('piwik')) {
       $url = variable_get('piwik_url_http', '');
     }
