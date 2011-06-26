@@ -112,112 +112,105 @@ function piwik_reports_reports($form, &$form_state, $report) {
   }*/
 
   // Create an array of URL parameters for easier maintenance.
-  $data1_params = array();
-  $data1_params['idSite'] = $piwik_site_id;
-  $data1_params['date'] = $date;
-  $data1_params['period'] = $period_name;
-  $data1_params['disableLink'] = 1;
-  $data1_params['module'] = 'Widgetize';
-  $data1_params['action'] = 'iframe';
-  $data1_params['disableLink'] = 1;
-  $data1_params['widget'] = 1;
- // $data1_params['loading'] = t('Loading data...');
+  $data_params[0] = array();
+  $data_params[0]['idSite'] = $piwik_site_id;
+  $data_params[0]['date'] = $date;
+  $data_params[0]['period'] = $period_name;
+  $data_params[0]['disableLink'] = 1;
+  $data_params[0]['module'] = 'Widgetize';
+  $data_params[0]['action'] = 'iframe';
+  $data_params[0]['disableLink'] = 1;
+  $data_params[0]['widget'] = 1;
+ // $data_params[0]['loading'] = t('Loading data...');
   if (!empty($piwik_auth)) {
-    $data1_params['token_auth'] = $piwik_auth;
+    $data_params[0]['token_auth'] = $piwik_auth;
   }
 
   switch ($report) {
     case 'visitors_overview':
-      $title1 = t('Visits trend');
-      $data1_params['columns[]'] = 'nb_visits';
-      $data1_params['moduleToWidgetize'] = 'VisitsSummary';
-      $data1_params['actionToWidgetize'] = 'getEvolutionGraph';
+      $title[0] = t('Visits trend');
+      $data_params[0]['columns[]'] = 'nb_visits';
+      $data_params[0]['moduleToWidgetize'] = 'VisitsSummary';
+      $data_params[0]['actionToWidgetize'] = 'getEvolutionGraph';
     break;
     case 'visitors_times':
-      $title1 = t('Visits by local time');
-      $data1_params['moduleToWidgetize'] = 'VisitTime';
-      $data1_params['actionToWidgetize'] = 'getVisitInformationPerLocalTime';
+      $title[0] = t('Visits by local time');
+      $data_params[0]['moduleToWidgetize'] = 'VisitTime';
+      $data_params[0]['actionToWidgetize'] = 'getVisitInformationPerLocalTime';
     break;
     case 'visitors_settings':
-      $data1_params['filter_limit'] = 6;
+      $data_params[0]['filter_limit'] = 6;
 
-      $data2_params = $data1_params;
-      $data3_params = $data1_params;
-      $data4_params = $data1_params;
+      $data_params[1] = $data_params[0];
+      $data_params[2] = $data_params[0];
+      $data_params[3] = $data_params[0];
       // Browser families
-      $title1 = t('Browser families');
-      $data1_params['moduleToWidgetize'] = 'UserSettings';
-      $data1_params['actionToWidgetize'] = 'getBrowserType';
+      $title[0] = t('Browser families');
+      $data_params[0]['moduleToWidgetize'] = 'UserSettings';
+      $data_params[0]['actionToWidgetize'] = 'getBrowserType';
       // Screen resolutions
-      $title2 = t('Screen resolution');
-      $data2_params['moduleToWidgetize'] = 'UserSettings';
-      $data2_params['actionToWidgetize'] = 'getConfiguration';
+      $title[1] = t('Screen resolution');
+      $data_params[1]['moduleToWidgetize'] = 'UserSettings';
+      $data_params[1]['actionToWidgetize'] = 'getConfiguration';
       // Operating systems
-      $title3 = t('Operating system');
-      $data3_params['moduleToWidgetize'] = 'UserSettings';
-      $data3_params['actionToWidgetize'] = 'getOS';
+      $title[2] = t('Operating system');
+      $data_params[2]['moduleToWidgetize'] = 'UserSettings';
+      $data_params[2]['actionToWidgetize'] = 'getOS';
       // Client configurations
-      $title4 = t('Client configuration');
-      $data4_params['moduleToWidgetize'] = 'UserSettings';
-      $data4_params['actionToWidgetize'] = 'getResolution';
+      $title[3] = t('Client configuration');
+      $data_params[3]['moduleToWidgetize'] = 'UserSettings';
+      $data_params[3]['actionToWidgetize'] = 'getResolution';
     break;
     case 'visitors_locations':
-      $title1 = t('Visitors countries');
-      $data1_params['moduleToWidgetize'] = 'UserCountry';
-      $data1_params['actionToWidgetize'] = 'getCountry';
-      $data1_params['filter_limit'] = 15;
+      $title[0] = t('Visitors countries');
+      $data_params[0]['moduleToWidgetize'] = 'UserCountry';
+      $data_params[0]['actionToWidgetize'] = 'getCountry';
+      $data_params[0]['filter_limit'] = 15;
     break;
     case 'actions_pageurls':
-      $title1 = t('Page visits');
-      $data1_params['moduleToWidgetize'] = 'Actions';
-      $data1_params['actionToWidgetize'] = 'getPageUrls';
-      $data1_params['filter_limit'] = 15;
+      $title[0] = t('Page visits');
+      $data_params[0]['moduleToWidgetize'] = 'Actions';
+      $data_params[0]['actionToWidgetize'] = 'getPageUrls';
+      $data_params[0]['filter_limit'] = 15;
     break;
     case 'actions_outlinks':
-      $title1 = t('');
-      $data1_params['moduleToWidgetize'] = 'Actions';
-      $data1_params['actionToWidgetize'] = 'getOutlinks';
-      $data1_params['filter_limit'] = 15;
+      $title[0] = t('');
+      $data_params[0]['moduleToWidgetize'] = 'Actions';
+      $data_params[0]['actionToWidgetize'] = 'getOutlinks';
+      $data_params[0]['filter_limit'] = 15;
     break;
     case 'actions_downloads':
-      $title1 = t('');
-      $data1_params['moduleToWidgetize'] = 'Actions';
-      $data1_params['actionToWidgetize'] = 'getDownloads';
-      $data1_params['filter_limit'] = 15;
+      $title[0] = t('');
+      $data_params[0]['moduleToWidgetize'] = 'Actions';
+      $data_params[0]['actionToWidgetize'] = 'getDownloads';
+      $data_params[0]['filter_limit'] = 15;
     break;
     case 'referers_evolution':
-      $data1_params['module'] = 'Referers';
-      $data1_params['action'] = 'getRefererType';
-      $data1_params['columns[]'] = 'nb_visits';
-      $data1_params['moduleToWidgetize'] = 'Referers';
-      $data1_params['actionToWidgetize'] = 'getRefererType';
-      $data1_params['viewDataTable'] = 'generateDataChartEvolution';
+      $title[0] = t('');
+      $data_params[0]['moduleToWidgetize'] = 'Referers';
+      $data_params[0]['actionToWidgetize'] = 'getRefererType';
     break;
     case 'referers_search':
-      $data2_params = $data1_params;
+      $data_params[1] = $data_params[0];
 
-      $data1_params['module'] = 'Referers';
-      $data1_params['action'] = 'getSearchEngines';
-      $data1_params['viewDataTable'] = 'generateDataChartPie';
+      $title[0] = t('Search engines');
+      $data_params[0]['moduleToWidgetize'] = 'Referers';
+      $data_params[0]['actionToWidgetize'] = 'getSearchEngines';
 
-      $data2_params['module'] = 'API';
-      $data2_params['method'] = 'Referers.getKeywords';
-      $data2_params['format'] = 'JSON';
-      unset($data2_params['loading']);
+      $title[1] = t('Keywords');
+      $data_params[1]['moduleToWidgetize'] = 'Referers';
+      $data_params[1]['actionToWidgetize'] = 'getKeywords';
     break;
     case 'referers_websites':
-      $data1_params['module'] = 'API';
-      $data1_params['method'] = 'Referers.getWebsites';
-      $data1_params['format'] = 'JSON';
+      $title[0] = t('');
+      $data_params[0]['moduleToWidgetize'] = 'Referers';
+      $data_params[0]['actionToWidgetize'] = 'getWebsites';
     break;
   }
 
   // Build the data URL with all params and urlencode it.
-  $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data1_params), 'title' => $title1,);
-   if ($report == 'visitors_settings') {
-    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data2_params), 'title' => $title2,);
-    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data3_params), 'title' => $title3,);
-    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data4_params), 'title' => $title4,);
+  foreach ($data_params as $key => $data) {
+    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data), 'title' => $title[$key],);
   }
 
   // Render HTML code.
@@ -229,17 +222,6 @@ function piwik_reports_reports($form, &$form_state, $report) {
     '#type' => 'item',
     '#markup' => $output,
   );
-
-  if ($report == 'referers_search') {
-    drupal_add_js(drupal_get_path('module', 'piwik_reports') . '/piwik_reports.js');
-    // Build the data URL with all params.
-    $data2_url = $piwik_url . 'index.php?' . drupal_http_build_query($data2_params) . '&jsoncallback=?';
-    drupal_add_js(array('piwik_reports' => array('url' => $data2_url, 'page' => 'actions')), 'setting');
-    $form['tablecontent'] = array(
-      '#type' => 'item',
-      '#markup' => '<div id="pagestable"></div>',
-    );
-  }
 
   return $form;
 }
