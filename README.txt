@@ -5,8 +5,8 @@ Piwik Reports
 
 Maintainer:  xlyz, xlyz@tiscali.it
 
-Add a piwik reports section where imports key traffic information from your 
-piwik server.
+This module adds a piwik reports section and imports key traffic information 
+from your piwik server.
 
 Poject homepage: http://drupal.org/project/piwik_reports
 
