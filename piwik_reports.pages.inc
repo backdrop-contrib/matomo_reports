@@ -62,6 +62,7 @@ function piwik_reports_dateselect_form() {
 function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
   $options = array();
   $sites = piwik_reports_get_sites($piwik_auth);
+  if (!isset($_SESSION['piwik_reports_site'])) $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
   $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites',''));
   foreach ($sites as $site) {
     if (in_array($site['idsite'],$allowed_keys)) {
@@ -72,16 +73,12 @@ function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
     $form['basic']['inline']['site'] = array(
       '#type' => 'select',
       '#title' => '',
-      '#default_value' => isset($_SESSION['piwik_reports_site']) ? $_SESSION['piwik_reports_site'] : $sites[0]['idSite'],
+      '#default_value' => $_SESSION['piwik_reports_site'],
       '#options' => $options,
     );
   }
-  elseif (count($options)) {
-    $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
-  }
-  else {
+  elseif (count($options) == 0) {
     $_SESSION['piwik_reports_site'] = '';
-    //drupal_set_message(t('No accessible sites are present.'), 'warning', FALSE);
   }
   return $form;
 }
@@ -106,7 +103,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
   $form = piwik_reports_dateselect_form();
   $form = piwik_reports_siteselect_form($form, $piwik_auth);
   $piwik_site_id = $_SESSION['piwik_reports_site'];
-  $period = $_SESSION['piwik_reports_period'];
+  $period = isset($_SESSION['piwik_reports_period']) ? $_SESSION['piwik_reports_period'] : 0;
 
   if ($period == 1) {
     // Special handling for "yesterday" = 1.
