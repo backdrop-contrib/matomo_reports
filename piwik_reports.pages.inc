@@ -51,10 +51,41 @@ function piwik_reports_dateselect_form() {
   $form['basic']['inline']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Filter'),
+    '#weight' => 15,
   );
-
   return $form;
 }
+
+/**
+ * Return the form where to select the site.
+ */
+function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
+  $options = array();
+  $sites = piwik_reports_get_sites($piwik_auth);
+  $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites',''));
+  foreach ($sites as $site) {
+    if (in_array($site['idsite'],$allowed_keys)) {
+      $options[$site['idsite']] = $site['name'];
+    }
+  }
+  if (count($options) > 1) {
+    $form['basic']['inline']['site'] = array(
+      '#type' => 'select',
+      '#title' => '',
+      '#default_value' => isset($_SESSION['piwik_reports_site']) ? $_SESSION['piwik_reports_site'] : $sites[0]['idSite'],
+      '#options' => $options,
+    );
+  }
+  elseif (count($options)) {
+    $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
+  }
+  else {
+    $_SESSION['piwik_reports_site'] = '';
+    //drupal_set_message(t('No accessible sites are present.'), 'warning', FALSE);
+  }
+  return $form;
+}
+
 
 /**
  * Return the $form that handles piwik reports
@@ -70,10 +101,11 @@ function piwik_reports_dateselect_form() {
 function piwik_reports_reports($form, &$form_state, $report) {
   global $user;
 
-  // Get basic configuration variables.
   $piwik_auth = (variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']);
   $piwik_url = piwik_reports_get_url();
-  $piwik_site_id = 3;//variable_get('piwik_site_id', '');
+  $form = piwik_reports_dateselect_form();
+  $form = piwik_reports_siteselect_form($form, $piwik_auth);
+  $piwik_site_id = $_SESSION['piwik_reports_site'];
   $period = $_SESSION['piwik_reports_period'];
 
   if ($period == 1) {
@@ -86,30 +118,6 @@ function piwik_reports_reports($form, &$form_state, $report) {
     $date = _piwik_reports_select_period(0);
   }
   $period_name = _piwik_reports_get_period_name($period);
-
-/*  if (in_array($report, array('visitors_overview', 'referers_evolution'))) {
-    $now = _piwik_reports_select_period(0);
-    if ($period == 1) {
-      $date = _piwik_reports_select_period($period);
-      $now = $date;
-    }
-    else {
-      // Otherwise it returns the start date value.
-      $date = _piwik_reports_select_period($period);
-    }
-
-    $date = $date . ',' . $now;
-
-    // Granuarity of measuring points in graph.
-    switch ($period) {
-      case 4:
-        $period_name = "week";
-        break;
-
-      default:
-        $period_name = "day";
-    }
-  }*/
 
   // Create an array of URL parameters for easier maintenance.
   $data_params[0] = array();
@@ -216,8 +224,6 @@ function piwik_reports_reports($form, &$form_state, $report) {
   // Render HTML code.
   $output = theme('piwik_reports', $theme_args);
 
-  $form = piwik_reports_dateselect_form();
-
   $form['content'] = array(
     '#type' => 'item',
     '#markup' => $output,
@@ -231,6 +237,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
  */
 function piwik_reports_reports_submit($form, &$form_state) {
   $_SESSION['piwik_reports_period'] = $form_state['values']['period'];
+  $_SESSION['piwik_reports_site'] = $form_state['values']['site'];
 }
 
 /**
