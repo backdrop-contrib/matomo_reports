@@ -204,7 +204,6 @@ function piwik_reports_menu() {
       'page arguments' => array('piwik_reports_admin_settings_form'),
       'access arguments' => array('administer piwik reports'),
       'type' => MENU_NORMAL_ITEM,
-      'file' => 'piwik.admin.inc',
     );
   }
   return $items;
