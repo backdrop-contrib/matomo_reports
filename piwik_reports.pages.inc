@@ -77,7 +77,13 @@ function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
       '#options' => $options,
     );
   }
-  elseif (count($options) == 0) {
+  elseif (count($options) == 1) {
+    $form['basic']['inline']['site'] = array(
+      '#type' => 'hidden',
+      '#value' => $_SESSION['piwik_reports_site'],
+    );
+  }
+  else {
     $_SESSION['piwik_reports_site'] = '';
   }
   return $form;
