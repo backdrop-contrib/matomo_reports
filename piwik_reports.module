@@ -93,6 +93,15 @@ function piwik_reports_menu() {
     'weight' => 4,
     'type' => MENU_LOCAL_TASK,
   );
+  $items['admin/reports/piwik_reports/visitors/variables'] = array(
+    'title' => 'Custom variables',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('piwik_reports_reports', 'custom_variables'),
+    'access arguments' => array('access piwik reports'),
+    'file' => 'piwik_reports.pages.inc',
+    'weight' => 5,
+    'type' => MENU_LOCAL_TASK,
+  );
   $items['admin/reports/piwik_reports/actions'] = array(
     'title' => 'Actions',
     'page callback' => 'drupal_get_form',

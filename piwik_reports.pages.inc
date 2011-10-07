@@ -172,6 +172,12 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[0]['actionToWidgetize'] = 'getCountry';
       $data_params[0]['filter_limit'] = 15;
     break;
+    case 'custom_variables':
+      $title[0] = t('Custom variables');
+      $data_params[0]['moduleToWidgetize'] = 'CustomVariables';
+      $data_params[0]['actionToWidgetize'] = 'getCustomVariables';
+      $data_params[0]['filter_limit'] = 15;
+    break;
     case 'actions_pageurls':
       $title[0] = t('Page visits');
       $data_params[0]['moduleToWidgetize'] = 'Actions';
