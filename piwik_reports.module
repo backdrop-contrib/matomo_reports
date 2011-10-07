@@ -234,6 +234,64 @@ function piwik_reports_menu_alter(&$items) {
 }
 
 /**
+ * Implements hook_block_info().
+ */
+function piwik_reports_block_info() {
+  $blocks['piwik_page_report'] = array(
+    'info' => t('Piwik page report'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function piwik_reports_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'piwik_page_report':
+      $block['subject'] = t('Piwik page statistics');
+      if (!module_exists('piwik')) {
+        $block['content'] = t('To use this block you need to install <a href="!url">Piwik</a> module',array('!url' => 'http://www.drupal.org/project/piwik',));
+        return $block;
+      } 
+      if ($router_item = menu_get_item()) { 
+        if ($router_item['access'] != TRUE) {
+          return;
+        }
+      } 
+      if (!user_access('access piwik reports')) {
+        return;
+      }
+      drupal_add_js(drupal_get_path('module', 'piwik_reports') . '/piwik_reports.js');
+      // Build the data URL with all params.
+      global $user;
+      $piwik_auth = (variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']);
+      $piwik_url = variable_get('piwik_url_http', '');
+
+      $data_params = array();
+      $data_params['idSite'] = variable_get('piwik_site_id',''); 
+      $data_params['date'] = 'today'; 
+      $data_params['period'] = 'year';
+      $data_params['module'] = 'API';
+      $data_params['method'] = 'Actions.getPageUrl';
+      $data_params['pageUrl'] = $_SERVER['REQUEST_URI']; 
+      $data_params['format'] = 'JSON';
+      if (!empty($piwik_auth)) {
+        $data_params['token_auth'] = $piwik_auth;
+      }
+      
+      $data_url = $piwik_url . 'index.php?' . drupal_http_build_query($data_params) . '&jsoncallback=?';
+      drupal_add_js(array('piwik_reports' => array('url' => $data_url)), 'setting');
+      $block['content'] = '<div id="piwikpageviews">x</div>';
+    break;
+  }
+  return $block;
+}
+
+/**
  * Implements hook_theme().
  */
 function piwik_reports_theme() {
