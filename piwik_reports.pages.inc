@@ -180,6 +180,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
     break;
     case 'custom_variables':
       $title[0] = t('Custom variables');
+      $iframe_height[0] = 1000;
       $data_params[0]['moduleToWidgetize'] = 'CustomVariables';
       $data_params[0]['actionToWidgetize'] = 'getCustomVariables';
       $data_params[0]['filter_limit'] = 15;
@@ -238,7 +239,10 @@ function piwik_reports_reports($form, &$form_state, $report) {
   }
   // Build the data URL with all params and urlencode it.
   foreach ($data_params as $key => $data) {
-    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data), 'title' => $title[$key], );
+    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data), 
+    'title' => $title[$key], 
+    'iframe_height' => ( isset($iframe_height[$key]) && $iframe_height[$key] > 0 ? $iframe_height[$key] : 350),
+    );
   }
   // Render HTML code.
   $output = theme('piwik_reports', $theme_args);
