@@ -33,7 +33,7 @@ function piwik_reports_dateselect_form() {
     4 => t('Last year'),
   );
 
-  $form['#attributes'] = array('class' => 'search-form');
+  $form['#attributes'] = array('class' => array('search-form'));
   $form['basic'] = array(
     '#type' => 'fieldset',
     '#title' => t('Filter time period'),
