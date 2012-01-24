@@ -236,12 +236,31 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[0]['moduleToWidgetize'] = 'Referers';
       $data_params[0]['actionToWidgetize'] = 'getWebsites';
     break;
+    case 'goals_evolution':
+      $goals = piwik_reports_get_goals($piwik_auth, $_SESSION['piwik_reports_site']);
+      if (count($goals) == 0) {
+        $empty_text = t('No goals have been set. Check with your Piwik server administrator if you desire some.');
+        $title[0] = NULL;
+        break;
+      }
+      $common_data_params = $data_params[0];
+      $i = 0;
+      foreach ($goals as $goal) {
+      $title[$i] = $goal['name'];
+      $data_params[$i] = $common_data_params;
+      $data_params[$i]['moduleToWidgetize'] = 'Goals';
+      $data_params[$i]['actionToWidgetize'] = 'widgetGoalReport';
+      $data_params[$i]['idGoal'] = $goal['idgoal'];
+      $i++;
+      }
+    break;
   }
   // Build the data URL with all params and urlencode it.
   foreach ($data_params as $key => $data) {
     $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data), 
     'title' => $title[$key], 
     'iframe_height' => ( isset($iframe_height[$key]) && $iframe_height[$key] > 0 ? $iframe_height[$key] : 350),
+    'empty_text' => ( isset($empty_text) ? $empty_text : NULL),
     );
   }
   // Render HTML code.

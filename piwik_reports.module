@@ -201,6 +201,15 @@ function piwik_reports_menu() {
     'weight' => 3,
     'type' => MENU_LOCAL_TASK,
   );
+  $items['admin/reports/piwik_reports/goals'] = array(
+    'title' => 'Goals',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('piwik_reports_reports', 'goals_evolution'),
+    'access arguments' => array('access piwik reports'),
+    'file' => 'piwik_reports.pages.inc',
+    'weight' => 4,
+    'type' => MENU_NORMAL_ITEM,
+  );
   // if piwik is installed group with it, otherwise not
   if (module_exists('piwik')) {
     $items['admin/config/system/piwik/tracking'] = array(
@@ -467,7 +476,22 @@ function piwik_reports_get_sites($token_auth) {
   $sites = drupal_json_decode($result->data);
   return $sites;
 }
-
+/**
+ * Return a list of goals active on selected site.
+ *
+ * @param $token_auth
+ *   Piwik server token auth.
+ * @param $site
+ *   Selected site id.
+ *
+ * @return $goals
+ */
+function piwik_reports_get_goals($token_auth, $site) {
+  // TODO: shall I cache this?
+  $result = drupal_http_request(piwik_reports_get_url() . 'index.php?module=API&method=Goals.getGoals&idSite=' . (int)$site . '&format=JSON&token_auth=' . $token_auth);
+  $goals = drupal_json_decode($result->data);
+  return $goals;
+}
 /**
  * Return Piwik server url.
  *
