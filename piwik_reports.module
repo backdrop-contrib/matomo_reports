@@ -120,13 +120,31 @@ function piwik_reports_menu() {
     'weight' => 1,
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
+  $items['admin/reports/piwik_reports/actions/entrypages'] = array(
+    'title' => 'Entry pages',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('piwik_reports_reports', 'actions_entryurls'),
+    'access arguments' => array('access piwik reports'),
+    'file' => 'piwik_reports.pages.inc',
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/piwik_reports/actions/exitpages'] = array(
+    'title' => 'Exit pages',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('piwik_reports_reports', 'actions_exiturls'),
+    'access arguments' => array('access piwik reports'),
+    'file' => 'piwik_reports.pages.inc',
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+  );
   $items['admin/reports/piwik_reports/actions/outlinks'] = array(
     'title' => 'Outlinks',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'actions_outlinks'),
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
-    'weight' => 2,
+    'weight' => 3,
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/actions/downloads'] = array(
@@ -135,7 +153,7 @@ function piwik_reports_menu() {
     'page arguments' => array('piwik_reports_reports', 'actions_downloads'),
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
-    'weight' => 3,
+    'weight' => 4,
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/referers'] = array(

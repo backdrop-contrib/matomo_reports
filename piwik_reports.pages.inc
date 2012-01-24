@@ -190,6 +190,18 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[0]['actionToWidgetize'] = 'getPageUrls';
       $data_params[0]['filter_limit'] = 15;
     break;
+    case 'actions_entryurls':
+      $title[0] = t('Page visits');
+      $data_params[0]['moduleToWidgetize'] = 'Actions';
+      $data_params[0]['actionToWidgetize'] = 'getEntryPageUrls';
+      $data_params[0]['filter_limit'] = 15;
+    break;
+    case 'actions_exiturls':
+      $title[0] = t('Page visits');
+      $data_params[0]['moduleToWidgetize'] = 'Actions';
+      $data_params[0]['actionToWidgetize'] = 'getExitPageUrls';
+      $data_params[0]['filter_limit'] = 15;
+    break;
     case 'actions_outlinks':
       $title[0] = t('');
       $data_params[0]['moduleToWidgetize'] = 'Actions';
