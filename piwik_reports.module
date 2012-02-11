@@ -437,28 +437,29 @@ function piwik_reports_admin_settings_form($form_state) {
     '#collapsed' => TRUE,
     '#description' => t('List sites you want restrict your users access to.'),
   );
-  if (variable_get('piwik_reports_token_auth', '') != '') {
     $sites = piwik_reports_get_sites(variable_get('piwik_reports_token_auth', ''));
-    if (is_array($sites) && count($sites)) {
       $form['piwik_reports_sites']['piwik_reports_allowed_sites'] = array(
         '#type' => 'textfield',
         '#weight' => 10,
         '#collapsible' => TRUE,
         '#default_value' => variable_get('piwik_reports_allowed_sites', ''),
         '#collapsed' => TRUE,
-        '#description' => t('List accessible sites id separated by a comma. Example: "1,4,12". Leave blank to let users see all sites accessible on piwik server with current token auth. Sites statistics that can be accessed with current token_auth are:'),
+        '#description' => t('List accessible sites id separated by a comma. Example: "1,4,12". Leave blank to let users see all sites accessible on piwik server with current token auth (highly recommended in case of per user token auth).'),
       );
+    if (is_array($sites) && count($sites)) {
+      if (variable_get('piwik_reports_token_auth', '') != '') {
+        $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t(' Sites currently accessible with global token_auth are:');
+      }
+      else {
+        $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t(' Sites currently accessible as anonymous are:');
+      }
       foreach ($sites as $site) {
         $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= '<br />' . (int) $site['idsite'] . ' - ' . check_plain($site['name']);
-      }
-    }
-    else {
-      $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#markup'] = t('No accessible sites are present. Please check your token auth is correct and that it has view permission on Piwik server.');
     }
   }
   else {
-    $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#markup'] = t('Limits can be set only if a global token_auth is set.');
-  }
+    $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t(' No accessible sites are available with current global token auth. Please check your token auth is correct and that it has view permission on Piwik server.');
+    }
   return system_settings_form($form);
 }
 

@@ -104,7 +104,7 @@ function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
 function piwik_reports_reports($form, &$form_state, $report) {
   global $user;
 
-  $piwik_auth = (variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']);
+  $piwik_auth = (isset($user->data['piwik_reports_token_auth']) && !empty($user->data['piwik_reports_token_auth'])? $user->data['piwik_reports_token_auth'] : variable_get('piwik_reports_token_auth', ''));
   $piwik_url = piwik_reports_get_url();
   $form = piwik_reports_dateselect_form();
   $form = piwik_reports_siteselect_form($form, $piwik_auth);
