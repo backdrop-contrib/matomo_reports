@@ -247,6 +247,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $i = 0;
       foreach ($goals as $goal) {
       $title[$i] = $goal['name'];
+      $iframe_height[$i] = 370;
       $data_params[$i] = $common_data_params;
       $data_params[$i]['moduleToWidgetize'] = 'Goals';
       $data_params[$i]['actionToWidgetize'] = 'widgetGoalReport';
