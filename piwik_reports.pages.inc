@@ -36,7 +36,7 @@ function piwik_reports_dateselect_form() {
   $form['#attributes'] = array('class' => array('search-form'));
   $form['basic'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Filter time period'),
+    '#title' => t('Select site and time period'),
   );
   $form['basic']['inline'] = array(
     '#prefix' => '<div class="container-inline">',
@@ -73,7 +73,8 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
   if (count($options) > 1) {
     $form['basic']['inline']['site'] = array(
       '#type' => 'select',
-      '#title' => '',
+      '#title' => t('Site: '),
+      '#weight' => -5,
       '#default_value' => $_SESSION['piwik_reports_site'],
       '#options' => $options,
     );
@@ -85,6 +86,9 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
     );
     $form['basic']['inline']['sitename'] = array(
       '#type' => 'textfield',
+      '#title' => t('Site: '),
+      '#weight' => -5,
+      '#size' => 25,
       '#value' => $sites[0]['name'],
       '#disabled' => true,
     );
