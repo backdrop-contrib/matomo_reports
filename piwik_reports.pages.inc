@@ -62,8 +62,11 @@ function piwik_reports_dateselect_form() {
 function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
   $options = array();
   $sites = piwik_reports_get_sites($piwik_auth);
-  if (empty($sites)) return;
-  if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '') $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
+  if (empty($sites)) {
+    $_SESSION['piwik_reports_site'] == '';
+    return;
+  }
+  if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '' || !array_key_exists($_SESSION['piwik_reports_site'],$sites)) $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
   $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites', ''));
   foreach ($sites as $site) {
     if (empty($allowed_keys[0]) || in_array($site['idsite'], $allowed_keys)) {
@@ -83,9 +86,11 @@ function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
       '#type' => 'hidden',
       '#value' => $_SESSION['piwik_reports_site'],
     );
-  }
-  else {
-    $_SESSION['piwik_reports_site'] = '';
+    $form['basic']['inline']['sitename'] = array(
+      '#type' => 'textfield',
+      '#value' => $sites[0]['name'],
+      '#disabled' => true,
+    );
   }
   return $form;
 }
@@ -110,6 +115,10 @@ function piwik_reports_reports($form, &$form_state, $report) {
   $form = piwik_reports_dateselect_form();
   $form = piwik_reports_siteselect_form($form, $piwik_auth);
   $piwik_site_id = $_SESSION['piwik_reports_site'];
+  if ($piwik_site_id == '') {
+    drupal_set_message(t('You can not access any data on the selected Piwik server. Please check authentication string and permissions with your Piwik server administrator.'), 'warning');
+    return $form;
+  }
   $period = isset($_SESSION['piwik_reports_period']) ? $_SESSION['piwik_reports_period'] : 0;
 
   if ($period == 1) {
