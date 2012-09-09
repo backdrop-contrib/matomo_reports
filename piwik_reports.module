@@ -474,7 +474,11 @@ function piwik_reports_admin_settings_form($form_state) {
 function piwik_reports_get_sites($token_auth) {
   // TODO: shall I cache this?
   $result = drupal_http_request(piwik_reports_get_url() . 'index.php?module=API&method=SitesManager.getSitesWithAtLeastViewAccess&format=JSON&token_auth=' . $token_auth);
-  $sites = drupal_json_decode($result->data);
+  if (empty($result->data)) {
+    $sites = array();
+  } else {
+    $sites = drupal_json_decode($result->data);
+  }
   return $sites;
 }
 /**
@@ -490,7 +494,11 @@ function piwik_reports_get_sites($token_auth) {
 function piwik_reports_get_goals($token_auth, $site) {
   // TODO: shall I cache this?
   $result = drupal_http_request(piwik_reports_get_url() . 'index.php?module=API&method=Goals.getGoals&idSite=' . (int)$site . '&format=JSON&token_auth=' . $token_auth);
-  $goals = drupal_json_decode($result->data);
+  if (empty($result->data)) {
+    $goals = array();
+  } else {
+    $goals = drupal_json_decode($result->data);
+  }
   return $goals;
 }
 /**
@@ -505,6 +513,9 @@ function piwik_reports_get_url() {
       $url = variable_get('piwik_url_http', '');
     }
   }
+  if ($url == '') {
+    drupal_set_message(t('Piwik server url is missing or wrong. Please ask your administrator to check Piwik Reports configuration.'), 'warning', false);
+  }  
   return $url;
 }
 

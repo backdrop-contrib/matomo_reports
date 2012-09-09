@@ -62,6 +62,7 @@ function piwik_reports_dateselect_form() {
 function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
   $options = array();
   $sites = piwik_reports_get_sites($piwik_auth);
+  if (empty($sites)) return;
   if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '') $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
   $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites', ''));
   foreach ($sites as $site) {
