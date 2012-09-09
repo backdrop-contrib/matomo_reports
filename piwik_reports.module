@@ -339,7 +339,7 @@ function piwik_reports_theme() {
 function piwik_reports_form_alter(&$form, $form_state, $form_id) {
   // Extend the form in "user/{userid}/edit/account".
   if ($form_id == 'user_profile_form' && $form['#user_category'] == 'account' && user_access('access piwik reports') && (variable_get('piwik_reports_token_auth', '') == '')) {
-  global $user;
+  $account = $form['#user'];
   $form['piwik_reports'] = array(
     '#type' => 'fieldset',
     '#title' => t('Piwik reports configuration'),
@@ -350,7 +350,7 @@ function piwik_reports_form_alter(&$form, $form_state, $form_id) {
   $form['piwik_reports']['piwik_reports_token_auth'] = array(
     '#type' => 'textfield',
     '#title' => t('Piwik authentication string'),
-    '#default_value' => (!empty($user->data['piwik_reports_token_auth'])) ? $user->data['piwik_reports_token_auth'] : 'anonymous',
+    '#default_value' => (!empty($account->data['piwik_reports_token_auth'])) ? $account->data['piwik_reports_token_auth'] : '',
     '#size' => 40,
     '#maxlength' => 40,
     '#description' => t('Click the <strong>Settings</strong> link in your Piwik account, then the <strong>Users</strong> tab and copy and paste your personal <strong>token_auth</strong> value into this field. If anonymous users have view permissions in Piwik you can set this value to <strong>anonymous</strong>. Or just ask the Piwik server administrator.'),
