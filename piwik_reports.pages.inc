@@ -59,20 +59,17 @@ function piwik_reports_dateselect_form() {
 /**
  * Return the form where to select the site.
  */
-function piwik_reports_siteselect_form($form = array(), $piwik_auth) {
+function piwik_reports_siteselect_form($form = array(), $sites = array()) {
   $options = array();
-  $sites = piwik_reports_get_sites($piwik_auth);
-  if (empty($sites)) {
-    $_SESSION['piwik_reports_site'] == '';
-    return;
-  }
-  if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '' || !array_key_exists($_SESSION['piwik_reports_site'],$sites)) $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
   $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites', ''));
+  $session_site_exists = false;
   foreach ($sites as $site) {
     if (empty($allowed_keys[0]) || in_array($site['idsite'], $allowed_keys)) {
       $options[$site['idsite']] = $site['name'];
     }
-  }
+    if (isset($_SESSION['piwik_reports_site']) && $_SESSION['piwik_reports_site'] == $site['idsite']) $session_site_exists = true;
+  } 
+  if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '' || !$session_site_exists) $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
   if (count($options) > 1) {
     $form['basic']['inline']['site'] = array(
       '#type' => 'select',
@@ -112,13 +109,15 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
   $piwik_auth = (isset($user->data['piwik_reports_token_auth']) && !empty($user->data['piwik_reports_token_auth'])? $user->data['piwik_reports_token_auth'] : variable_get('piwik_reports_token_auth', ''));
   $piwik_url = piwik_reports_get_url();
-  $form = piwik_reports_dateselect_form();
-  $form = piwik_reports_siteselect_form($form, $piwik_auth);
-  $piwik_site_id = $_SESSION['piwik_reports_site'];
-  if ($piwik_site_id == '') {
+  $sites = piwik_reports_get_sites($piwik_auth);
+  if (empty($sites)) {
+    $_SESSION['piwik_reports_site'] == '';
     drupal_set_message(t('You can not access any data on the selected Piwik server. Please check authentication string and permissions with your Piwik server administrator.'), 'warning');
-    return $form;
+    return;
   }
+  $form = piwik_reports_dateselect_form();
+  $form = piwik_reports_siteselect_form($form, $sites);
+  $piwik_site_id = $_SESSION['piwik_reports_site'];
   $period = isset($_SESSION['piwik_reports_period']) ? $_SESSION['piwik_reports_period'] : 0;
 
   if ($period == 1) {
