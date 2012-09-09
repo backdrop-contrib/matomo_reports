@@ -217,19 +217,19 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[0]['filter_limit'] = 15;
     break;
     case 'actions_outlinks':
-      $title[0] = t('');
+      $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getOutlinks';
       $data_params[0]['filter_limit'] = 15;
     break;
     case 'actions_downloads':
-      $title[0] = t('');
+      $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getDownloads';
       $data_params[0]['filter_limit'] = 15;
     break;
     case 'referers_evolution':
-      $title[0] = t('');
+      $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Referers';
       $data_params[0]['actionToWidgetize'] = 'getRefererType';
     break;
@@ -245,7 +245,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[1]['actionToWidgetize'] = 'getKeywords';
     break;
     case 'referers_websites':
-      $title[0] = t('');
+      $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Referers';
       $data_params[0]['actionToWidgetize'] = 'getWebsites';
     break;
