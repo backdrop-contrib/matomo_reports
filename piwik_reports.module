@@ -283,12 +283,12 @@ function piwik_reports_block_view($delta = '') {
       if (!module_exists('piwik')) {
         $block['content'] = t('To use this block you need to install <a href="!url">Piwik</a> module',array('!url' => 'http://www.drupal.org/project/piwik',));
         return $block;
-      } 
-      if ($router_item = menu_get_item()) { 
+      }
+      if ($router_item = menu_get_item()) {
         if ($router_item['access'] != TRUE) {
           return;
         }
-      } 
+      }
       if (!user_access('access piwik reports')) {
         return;
       }
@@ -299,17 +299,17 @@ function piwik_reports_block_view($delta = '') {
       $piwik_url = variable_get('piwik_url_http', '');
 
       $data_params = array();
-      $data_params['idSite'] = variable_get('piwik_site_id',''); 
-      $data_params['date'] = 'today'; 
+      $data_params['idSite'] = variable_get('piwik_site_id','');
+      $data_params['date'] = 'today';
       $data_params['period'] = 'year';
       $data_params['module'] = 'API';
       $data_params['method'] = 'Actions.getPageUrl';
-      $data_params['pageUrl'] = $_SERVER['REQUEST_URI']; 
+      $data_params['pageUrl'] = urldecode($_SERVER['REQUEST_URI']);
       $data_params['format'] = 'JSON';
       if (!empty($piwik_auth)) {
         $data_params['token_auth'] = $piwik_auth;
       }
-      
+
       $data_url = $piwik_url . 'index.php?' . drupal_http_build_query($data_params) . '&jsoncallback=?';
       drupal_add_js(array('piwik_reports' => array('url' => $data_url)), 'setting');
       $block['content'] = '<div id="piwikpageviews">x</div>';
@@ -515,7 +515,7 @@ function piwik_reports_get_url() {
   }
   if ($url == '') {
     drupal_set_message(t('Piwik server url is missing or wrong. Please ask your administrator to check Piwik Reports configuration.'), 'warning', false);
-  }  
+  }
   return $url;
 }
 
