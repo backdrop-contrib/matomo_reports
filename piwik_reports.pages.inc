@@ -68,7 +68,7 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
       $options[$site['idsite']] = $site['name'];
     }
     if (isset($_SESSION['piwik_reports_site']) && $_SESSION['piwik_reports_site'] == $site['idsite']) $session_site_exists = true;
-  } 
+  }
   if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '' || !$session_site_exists) $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
   if (count($options) > 1) {
     $form['basic']['inline']['site'] = array(
@@ -230,23 +230,23 @@ function piwik_reports_reports($form, &$form_state, $report) {
     break;
     case 'referers_evolution':
       $title[0] = '';
-      $data_params[0]['moduleToWidgetize'] = 'Referers';
-      $data_params[0]['actionToWidgetize'] = 'getRefererType';
+      $data_params[0]['moduleToWidgetize'] = 'Referrers';
+      $data_params[0]['actionToWidgetize'] = 'getReferrerType';
     break;
     case 'referers_search':
       $data_params[1] = $data_params[0];
 
       $title[0] = t('Search engines');
-      $data_params[0]['moduleToWidgetize'] = 'Referers';
+      $data_params[0]['moduleToWidgetize'] = 'Referrers';
       $data_params[0]['actionToWidgetize'] = 'getSearchEngines';
 
       $title[1] = t('Keywords');
-      $data_params[1]['moduleToWidgetize'] = 'Referers';
+      $data_params[1]['moduleToWidgetize'] = 'Referrers';
       $data_params[1]['actionToWidgetize'] = 'getKeywords';
     break;
     case 'referers_websites':
       $title[0] = '';
-      $data_params[0]['moduleToWidgetize'] = 'Referers';
+      $data_params[0]['moduleToWidgetize'] = 'Referrers';
       $data_params[0]['actionToWidgetize'] = 'getWebsites';
     break;
     case 'goals_evolution':
@@ -271,8 +271,8 @@ function piwik_reports_reports($form, &$form_state, $report) {
   }
   // Build the data URL with all params and urlencode it.
   foreach ($data_params as $key => $data) {
-    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data), 
-    'title' => $title[$key], 
+    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data),
+    'title' => $title[$key],
     'iframe_height' => ( isset($iframe_height[$key]) && $iframe_height[$key] > 0 ? $iframe_height[$key] : 350),
     'empty_text' => ( isset($empty_text) ? $empty_text : NULL),
     );
