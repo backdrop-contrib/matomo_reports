@@ -2,11 +2,11 @@
 
 /**
  * @file
- * Reports callback for Piwik Reports
+ * Reports callback for Piwik Reports.
  */
 
 /**
- * Report menu links
+ * Report menu links.
  */
 function piwik_reports_menu_block_page() {
   $item = menu_get_item();
@@ -62,14 +62,18 @@ function piwik_reports_dateselect_form() {
 function piwik_reports_siteselect_form($form = array(), $sites = array()) {
   $options = array();
   $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites', ''));
-  $session_site_exists = false;
+  $session_site_exists = FALSE;
   foreach ($sites as $site) {
     if (empty($allowed_keys[0]) || in_array($site['idsite'], $allowed_keys)) {
       $options[$site['idsite']] = $site['name'];
     }
-    if (isset($_SESSION['piwik_reports_site']) && $_SESSION['piwik_reports_site'] == $site['idsite']) $session_site_exists = true;
+    if (isset($_SESSION['piwik_reports_site']) && $_SESSION['piwik_reports_site'] == $site['idsite']) {
+      $session_site_exists = TRUE;
+    }
   }
-  if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '' || !$session_site_exists) $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
+  if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '' || !$session_site_exists) {
+    $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
+  }
   if (count($options) > 1) {
     $form['basic']['inline']['site'] = array(
       '#type' => 'select',
@@ -90,28 +94,29 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
       '#weight' => -5,
       '#size' => 25,
       '#value' => $sites[0]['name'],
-      '#disabled' => true,
+      '#disabled' => TRUE,
     );
   }
   return $form;
 }
 
-
 /**
- * Return the $form that handles piwik reports
+ * Return the $form that handles piwik reports.
  *
- * @param $form
- * @param $form_state
- *   see form api.
- * @param $report
+ * @param array $form
+ *   See form API.
+ * @param array $form_state
+ *   See form API.
+ * @param string $report
  *   The report name.
  *
- * @return
+ * @return array
+ *   See form API.
  */
 function piwik_reports_reports($form, &$form_state, $report) {
   global $user;
 
-  $piwik_auth = (isset($user->data['piwik_reports_token_auth']) && !empty($user->data['piwik_reports_token_auth'])? $user->data['piwik_reports_token_auth'] : variable_get('piwik_reports_token_auth', ''));
+  $piwik_auth = (isset($user->data['piwik_reports_token_auth']) && !empty($user->data['piwik_reports_token_auth']) ? $user->data['piwik_reports_token_auth'] : variable_get('piwik_reports_token_auth', ''));
   $piwik_url = piwik_reports_get_url();
   $sites = piwik_reports_get_sites($piwik_auth);
   if (empty($sites)) {
@@ -145,7 +150,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
   $data_params[0]['action'] = 'iframe';
   $data_params[0]['disableLink'] = 1;
   $data_params[0]['widget'] = 1;
- // $data_params[0]['loading'] = t('Loading data...');
+  // $data_params[0]['loading'] = t('Loading data...');.
   if (!empty($piwik_auth)) {
     $data_params[0]['token_auth'] = $piwik_auth;
   }
@@ -156,83 +161,94 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[0]['columns[]'] = 'nb_visits';
       $data_params[0]['moduleToWidgetize'] = 'VisitsSummary';
       $data_params[0]['actionToWidgetize'] = 'getEvolutionGraph';
-    break;
+      break;
+
     case 'visitors_times':
       $title[0] = t('Visits by local time');
       $data_params[0]['moduleToWidgetize'] = 'VisitTime';
       $data_params[0]['actionToWidgetize'] = 'getVisitInformationPerLocalTime';
-    break;
+      break;
+
     case 'visitors_settings':
       $data_params[0]['filter_limit'] = 6;
 
       $data_params[1] = $data_params[0];
       $data_params[2] = $data_params[0];
       $data_params[3] = $data_params[0];
-      // Browser families
+      // Browser families.
       $title[0] = t('Browser families');
       $data_params[0]['moduleToWidgetize'] = 'UserSettings';
       $data_params[0]['actionToWidgetize'] = 'getBrowserType';
-      // Screen resolutions
+      // Screen resolutions.
       $title[1] = t('Screen resolution');
       $data_params[1]['moduleToWidgetize'] = 'UserSettings';
       $data_params[1]['actionToWidgetize'] = 'getConfiguration';
-      // Operating systems
+      // Operating systems.
       $title[2] = t('Operating system');
       $data_params[2]['moduleToWidgetize'] = 'UserSettings';
       $data_params[2]['actionToWidgetize'] = 'getOS';
-      // Client configurations
+      // Client configurations.
       $title[3] = t('Client configuration');
       $data_params[3]['moduleToWidgetize'] = 'UserSettings';
       $data_params[3]['actionToWidgetize'] = 'getResolution';
-    break;
+      break;
+
     case 'visitors_locations':
       $title[0] = t('Visitors countries');
       $data_params[0]['moduleToWidgetize'] = 'UserCountry';
       $data_params[0]['actionToWidgetize'] = 'getCountry';
       $data_params[0]['filter_limit'] = 15;
-    break;
+      break;
+
     case 'custom_variables':
       $title[0] = t('Custom variables');
       $iframe_height[0] = 1000;
       $data_params[0]['moduleToWidgetize'] = 'CustomVariables';
       $data_params[0]['actionToWidgetize'] = 'getCustomVariables';
       $data_params[0]['filter_limit'] = 15;
-    break;
+      break;
+
     case 'actions_pageurls':
       $title[0] = t('Page visits');
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getPageUrls';
       $data_params[0]['filter_limit'] = 15;
-    break;
+      break;
+
     case 'actions_entryurls':
       $title[0] = t('Page visits');
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getEntryPageUrls';
       $data_params[0]['filter_limit'] = 15;
-    break;
+      break;
+
     case 'actions_exiturls':
       $title[0] = t('Page visits');
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getExitPageUrls';
       $data_params[0]['filter_limit'] = 15;
-    break;
+      break;
+
     case 'actions_outlinks':
       $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getOutlinks';
       $data_params[0]['filter_limit'] = 15;
-    break;
+      break;
+
     case 'actions_downloads':
       $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getDownloads';
       $data_params[0]['filter_limit'] = 15;
-    break;
+      break;
+
     case 'referers_evolution':
       $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Referrers';
       $data_params[0]['actionToWidgetize'] = 'getReferrerType';
-    break;
+      break;
+
     case 'referers_search':
       $data_params[1] = $data_params[0];
 
@@ -243,12 +259,14 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $title[1] = t('Keywords');
       $data_params[1]['moduleToWidgetize'] = 'Referrers';
       $data_params[1]['actionToWidgetize'] = 'getKeywords';
-    break;
+      break;
+
     case 'referers_websites':
       $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Referrers';
       $data_params[0]['actionToWidgetize'] = 'getWebsites';
-    break;
+      break;
+
     case 'goals_evolution':
       $goals = piwik_reports_get_goals($piwik_auth, $_SESSION['piwik_reports_site']);
       if (count($goals) == 0) {
@@ -259,22 +277,23 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $common_data_params = $data_params[0];
       $i = 0;
       foreach ($goals as $goal) {
-      $title[$i] = $goal['name'];
-      $iframe_height[$i] = 370;
-      $data_params[$i] = $common_data_params;
-      $data_params[$i]['moduleToWidgetize'] = 'Goals';
-      $data_params[$i]['actionToWidgetize'] = 'widgetGoalReport';
-      $data_params[$i]['idGoal'] = $goal['idgoal'];
-      $i++;
+        $title[$i] = $goal['name'];
+        $iframe_height[$i] = 370;
+        $data_params[$i] = $common_data_params;
+        $data_params[$i]['moduleToWidgetize'] = 'Goals';
+        $data_params[$i]['actionToWidgetize'] = 'widgetGoalReport';
+        $data_params[$i]['idGoal'] = $goal['idgoal'];
+        $i++;
       }
-    break;
+      break;
   }
   // Build the data URL with all params and urlencode it.
   foreach ($data_params as $key => $data) {
-    $theme_args['data_url'][] = array('url' => $piwik_url . 'index.php?' . drupal_http_build_query($data),
-    'title' => $title[$key],
-    'iframe_height' => ( isset($iframe_height[$key]) && $iframe_height[$key] > 0 ? $iframe_height[$key] : 350),
-    'empty_text' => ( isset($empty_text) ? $empty_text : NULL),
+    $theme_args['data_url'][] = array(
+      'url' => $piwik_url . 'index.php?' . drupal_http_build_query($data),
+      'title' => $title[$key],
+      'iframe_height' => (isset($iframe_height[$key]) && $iframe_height[$key] > 0 ? $iframe_height[$key] : 350),
+      'empty_text' => (isset($empty_text) ? $empty_text : NULL),
     );
   }
   // Render HTML code.
@@ -287,7 +306,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
 }
 
 /**
- * Reports form submit function
+ * Reports form submit function.
  */
 function piwik_reports_reports_submit($form, &$form_state) {
   $_SESSION['piwik_reports_period'] = $form_state['values']['period'];
@@ -295,13 +314,14 @@ function piwik_reports_reports_submit($form, &$form_state) {
 }
 
 /**
- * Helper function that return the starting and ending dates according to the
+ * Helper function to return the starting and ending dates according to the
  * selected period.
  *
- * @param $period
- *    selected period
- * @return
- *    array with starting and ending date
+ * @param int $period
+ *   Selected period.
+ *
+ * @return string
+ *   Formatted date.
  */
 function _piwik_reports_select_period($period) {
   switch ($period) {
@@ -333,12 +353,13 @@ function _piwik_reports_select_period($period) {
 }
 
 /**
- * Helper function that return the name of the selected period.
+ * Helper function to return the name of the selected period.
  *
- * @param $period
- *    selected period
- * @return
- *    name
+ * @param int $period
+ *   Selected period.
+ *
+ * @return string
+ *   Name of period.
  */
 function _piwik_reports_get_period_name($period) {
   // Possible periods are day, week, month, year.

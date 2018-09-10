@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Default implementation of the visitors overview report template.
@@ -14,5 +15,5 @@
     ?>
     <h2><?php print $data['title']; ?></h2>
     <div class="widgetIframe"><iframe width="100%" height="<?php print $data['iframe_height'] . '" src="' . $data['url']; ?>" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
-    <?php }
+  <?php }
   }

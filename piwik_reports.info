@@ -2,4 +2,3 @@ name = Piwik Reports
 description = Adds Piwik reports to Drupal reports section.
 core = 7.x
 package = Statistics
-

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Defines features and functions common to Piwik Reports
+ * Defines features and functions common to Piwik Reports.
  */
 
 /**
@@ -39,7 +39,7 @@ function piwik_reports_permission() {
  * Implements hook_menu().
  */
 function piwik_reports_menu() {
-  // Reports
+  // Reports:
   $items['admin/reports/piwik_reports'] = array(
     'title' => 'Piwik web analytics',
     'page callback' => 'piwik_reports_menu_block_page',
@@ -210,7 +210,7 @@ function piwik_reports_menu() {
     'weight' => 4,
     'type' => MENU_NORMAL_ITEM,
   );
-  // if piwik is installed group with it, otherwise not
+  // If piwik is installed, group with it, otherwise not.
   if (module_exists('piwik')) {
     $items['admin/config/system/piwik/tracking'] = array(
       'title' => 'Tracking',
@@ -253,7 +253,12 @@ function piwik_reports_menu_alter(&$items) {
     $items['admin/config/system/piwik'] = array(
       'title' => 'Piwik',
       'description' => 'Configure the settings for Piwik.',
-      'access arguments' => array(array('administer piwik', 'administer piwik reports')),
+      'access arguments' => array(
+        array(
+          'administer piwik',
+          'administer piwik reports',
+        ),
+      ),
       'access callback' => 'piwik_reports_any_access',
       'type' => MENU_NORMAL_ITEM,
     );
@@ -281,7 +286,7 @@ function piwik_reports_block_view($delta = '') {
     case 'piwik_page_report':
       $block['subject'] = t('Piwik page statistics');
       if (!module_exists('piwik')) {
-        $block['content'] = t('To use this block you need to install <a href="!url">Piwik</a> module',array('!url' => 'http://www.drupal.org/project/piwik',));
+        $block['content'] = t('To use this block you need to install <a href="!url">Piwik</a> module', array('!url' => 'http://www.drupal.org/project/piwik'));
         return $block;
       }
       if ($router_item = menu_get_item()) {
@@ -299,7 +304,7 @@ function piwik_reports_block_view($delta = '') {
       $piwik_url = variable_get('piwik_url_http', '');
 
       $data_params = array();
-      $data_params['idSite'] = variable_get('piwik_site_id','');
+      $data_params['idSite'] = variable_get('piwik_site_id', '');
       $data_params['date'] = 'today';
       $data_params['period'] = 'year';
       $data_params['module'] = 'API';
@@ -313,7 +318,7 @@ function piwik_reports_block_view($delta = '') {
       $data_url = $piwik_url . 'index.php?' . drupal_http_build_query($data_params) . '&jsoncallback=?';
       drupal_add_js(array('piwik_reports' => array('url' => $data_url)), 'setting');
       $block['content'] = '<div id="piwikpageviews">x</div>';
-    break;
+      break;
   }
   return $block;
 }
@@ -339,22 +344,22 @@ function piwik_reports_theme() {
 function piwik_reports_form_alter(&$form, $form_state, $form_id) {
   // Extend the form in "user/{userid}/edit/account".
   if ($form_id == 'user_profile_form' && $form['#user_category'] == 'account' && user_access('access piwik reports') && (variable_get('piwik_reports_token_auth', '') == '')) {
-  $account = $form['#user'];
-  $form['piwik_reports'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Piwik reports configuration'),
-    '#weight' => 3,
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['piwik_reports']['piwik_reports_token_auth'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Piwik authentication string'),
-    '#default_value' => (!empty($account->data['piwik_reports_token_auth'])) ? $account->data['piwik_reports_token_auth'] : '',
-    '#size' => 40,
-    '#maxlength' => 40,
-    '#description' => t('Click the <strong>Settings</strong> link in your Piwik account, then the <strong>Users</strong> tab and copy and paste your personal <strong>token_auth</strong> value into this field. If anonymous users have view permissions in Piwik you can set this value to <strong>anonymous</strong>. Or just ask the Piwik server administrator.'),
-  );
+    $account = $form['#user'];
+    $form['piwik_reports'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Piwik reports configuration'),
+      '#weight' => 3,
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    $form['piwik_reports']['piwik_reports_token_auth'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Piwik authentication string'),
+      '#default_value' => (!empty($account->data['piwik_reports_token_auth'])) ? $account->data['piwik_reports_token_auth'] : '',
+      '#size' => 40,
+      '#maxlength' => 40,
+      '#description' => t('Click the <strong>Settings</strong> link in your Piwik account, then the <strong>Users</strong> tab and copy and paste your personal <strong>token_auth</strong> value into this field. If anonymous users have view permissions in Piwik you can set this value to <strong>anonymous</strong>. Or just ask the Piwik server administrator.'),
+    );
   }
   elseif ($form_id == 'piwik_admin_settings_form') {
     drupal_set_title(t('Piwik tracking'));
@@ -362,16 +367,20 @@ function piwik_reports_form_alter(&$form, $form_state, $form_id) {
 }
 
 /**
- * Return true if use has any of the permissions
+ * Determine if user has any piwik reports permissions.
  *
- * @param $arguments
- *   array of permissions.
+ * @param array $arguments
+ *   Array of permissions.
  *
- * @return
+ * @return bool
+ *   True if user has any piwik reports permissions.
  */
 function piwik_reports_any_access($arguments) {
-  foreach ($arguments as $perm)
-  if (user_access($perm)) return TRUE;
+  foreach ($arguments as $perm) {
+    if (user_access($perm)) {
+      return TRUE;
+    }
+  }
 }
 
 /**
@@ -385,12 +394,13 @@ function piwik_reports_user_presave(&$edit, $account, $category) {
 }
 
 /**
- * Return the $form that handles piwik reports config page
+ * Return the $form that handles piwik reports config page.
  *
- * @param $form_state
- *   see form api.
+ * @param array $form_state
+ *   See form API.
  *
- * @return $form
+ * @return array
+ *   Piwik form fields.
  */
 function piwik_reports_admin_settings_form($form_state) {
   drupal_set_title(t('Piwik reports'));
@@ -419,7 +429,7 @@ function piwik_reports_admin_settings_form($form_state) {
     '#type' => 'fieldset',
     '#title' => t('Token auth'),
     '#weight' => 5,
-    '#description' => t('To see piwik reports in Drupal you need a <strong>token_auth</strong> value. You can find it in the  <strong>Users</strong> tab under the <strong>Settings</strong> link in your Piwik account. Or just ask your Piwik server administrator.'),
+    '#description' => t('To see piwik reports in Drupal you need a <strong>token_auth</strong> value. You can find it in the  <strong>Users</strong> tab under the <strong>Settings</strong> link in your Piwik account or ask your Piwik server administrator.'),
   );
   $form['piwik_reports']['piwik_reports_token_auth'] = array(
     '#type' => 'textfield',
@@ -437,74 +447,81 @@ function piwik_reports_admin_settings_form($form_state) {
     '#collapsed' => TRUE,
     '#description' => t('List sites you want restrict your users access to.'),
   );
-    $sites = piwik_reports_get_sites(variable_get('piwik_reports_token_auth', ''));
-      $form['piwik_reports_sites']['piwik_reports_allowed_sites'] = array(
-        '#type' => 'textfield',
-        '#weight' => 10,
-        '#collapsible' => TRUE,
-        '#default_value' => variable_get('piwik_reports_allowed_sites', ''),
-        '#collapsed' => TRUE,
-        '#description' => t('List accessible sites id separated by a comma. Example: "1,4,12". Leave blank to let users see all sites accessible on piwik server with current token auth (highly recommended in case of per user token auth).'),
-      );
-    if (is_array($sites) && count($sites)) {
-      if (variable_get('piwik_reports_token_auth', '') != '') {
-        $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t(' Sites currently accessible with global token_auth are:');
-      }
-      else {
-        $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t(' Sites currently accessible as anonymous are:');
-      }
-      foreach ($sites as $site) {
-        $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= '<br />' . (int) $site['idsite'] . ' - ' . check_plain($site['name']);
+  $sites = piwik_reports_get_sites(variable_get('piwik_reports_token_auth', ''));
+  $form['piwik_reports_sites']['piwik_reports_allowed_sites'] = array(
+    '#type' => 'textfield',
+    '#weight' => 10,
+    '#collapsible' => TRUE,
+    '#default_value' => variable_get('piwik_reports_allowed_sites', ''),
+    '#collapsed' => TRUE,
+    '#description' => t('List accessible sites id separated by a comma. Example: "1,4,12". Leave blank to let users see all sites accessible on piwik server with current token auth (highly recommended in case of per user token auth).'),
+  );
+  if (is_array($sites) && count($sites)) {
+    if (variable_get('piwik_reports_token_auth', '') != '') {
+      $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t('Sites currently accessible with global token_auth are:');
+    }
+    else {
+      $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t('Sites currently accessible as anonymous are:');
+    }
+    foreach ($sites as $site) {
+      $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= '<br />' . (int) $site['idsite'] . ' - ' . check_plain($site['name']);
     }
   }
   else {
-    $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t(' No accessible sites are available with current global token auth. Please check your token auth is correct and that it has view permission on Piwik server.');
-    }
+    $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t('No accessible sites are available with current global token auth. Please check your token auth is correct and that it has view permission on Piwik server.');
+  }
   return system_settings_form($form);
 }
 
 /**
  * Return a list of sites which statistic are accessible on piwik server.
  *
- * @param $token_auth
+ * @param string $token_auth
  *   Piwik server token auth.
  *
- * @return $sites
+ * @return array
+ *   Array of sites returned from Piwik reports API.
  */
 function piwik_reports_get_sites($token_auth) {
   // TODO: shall I cache this?
   $result = drupal_http_request(piwik_reports_get_url() . 'index.php?module=API&method=SitesManager.getSitesWithAtLeastViewAccess&format=JSON&token_auth=' . $token_auth);
   if (empty($result->data)) {
     $sites = array();
-  } else {
+  }
+  else {
     $sites = drupal_json_decode($result->data);
   }
   return $sites;
 }
+
 /**
  * Return a list of goals active on selected site.
  *
- * @param $token_auth
+ * @param string $token_auth
  *   Piwik server token auth.
- * @param $site
+ * @param string $site
  *   Selected site id.
  *
- * @return $goals
+ * @return array
+ *   Goals returned from Piwik reports API.
  */
 function piwik_reports_get_goals($token_auth, $site) {
   // TODO: shall I cache this?
-  $result = drupal_http_request(piwik_reports_get_url() . 'index.php?module=API&method=Goals.getGoals&idSite=' . (int)$site . '&format=JSON&token_auth=' . $token_auth);
+  $result = drupal_http_request(piwik_reports_get_url() . 'index.php?module=API&method=Goals.getGoals&idSite=' . (int) $site . '&format=JSON&token_auth=' . $token_auth);
   if (empty($result->data)) {
     $goals = array();
-  } else {
+  }
+  else {
     $goals = drupal_json_decode($result->data);
   }
   return $goals;
 }
+
 /**
  * Return Piwik server url.
  *
- * @return $url
+ * @return string
+ *   Stored value of Piwik server URL.
  */
 function piwik_reports_get_url() {
   $url = variable_get('piwik_reports_url_http', '');
@@ -514,8 +531,7 @@ function piwik_reports_get_url() {
     }
   }
   if ($url == '') {
-    drupal_set_message(t('Piwik server url is missing or wrong. Please ask your administrator to check Piwik Reports configuration.'), 'warning', false);
+    drupal_set_message(t('Piwik server url is missing or wrong. Please ask your administrator to check Piwik Reports configuration.'), 'warning', FALSE);
   }
   return $url;
 }
-
