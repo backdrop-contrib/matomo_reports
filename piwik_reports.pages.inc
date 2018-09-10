@@ -116,12 +116,12 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
 function piwik_reports_reports($form, &$form_state, $report) {
   global $user;
 
-  $piwik_auth = (isset($user->data['piwik_reports_token_auth']) && !empty($user->data['piwik_reports_token_auth']) ? $user->data['piwik_reports_token_auth'] : variable_get('piwik_reports_token_auth', ''));
+  $piwik_auth = (variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']);
   $piwik_url = piwik_reports_get_url();
   $sites = piwik_reports_get_sites($piwik_auth);
   if (empty($sites)) {
     $_SESSION['piwik_reports_site'] == '';
-    drupal_set_message(t('You can not access any data on the selected Piwik server. Please check authentication string and permissions with your Piwik server administrator.'), 'warning');
+    drupal_set_message(t('You cannot access any data on the selected Piwik server. Please check authentication string and permissions with your Piwik server administrator.'), 'warning');
     return;
   }
   $form = piwik_reports_dateselect_form();
