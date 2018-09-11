@@ -180,6 +180,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
     case 'visitors_locations':
       $title[0] = t('Visitors countries');
+      $iframe_height[0] = 750;
       $data_params[0]['moduleToWidgetize'] = 'UserCountry';
       $data_params[0]['actionToWidgetize'] = 'getCountry';
       $data_params[0]['filter_limit'] = 15;
@@ -195,6 +196,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
     case 'actions_pageurls':
       $title[0] = t('Page visits');
+      $iframe_height[0] = 750;
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getPageUrls';
       $data_params[0]['filter_limit'] = 15;
@@ -202,6 +204,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
     case 'actions_entryurls':
       $title[0] = t('Page visits');
+      $iframe_height[0] = 750;
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getEntryPageUrls';
       $data_params[0]['filter_limit'] = 15;
@@ -209,6 +212,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
     case 'actions_exiturls':
       $title[0] = t('Page visits');
+      $iframe_height[0] = 750;
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getExitPageUrls';
       $data_params[0]['filter_limit'] = 15;
@@ -216,6 +220,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
     case 'actions_outlinks':
       $title[0] = '';
+      $iframe_height[0] = 750;
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getOutlinks';
       $data_params[0]['filter_limit'] = 15;
@@ -223,6 +228,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
     case 'actions_downloads':
       $title[0] = '';
+      $iframe_height[0] = 750;
       $data_params[0]['moduleToWidgetize'] = 'Actions';
       $data_params[0]['actionToWidgetize'] = 'getDownloads';
       $data_params[0]['filter_limit'] = 15;
@@ -248,6 +254,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
     case 'referers_websites':
       $title[0] = '';
+      $iframe_height[0] = 1020;
       $data_params[0]['moduleToWidgetize'] = 'Referrers';
       $data_params[0]['actionToWidgetize'] = 'getWebsites';
       break;
@@ -263,7 +270,6 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $i = 0;
       foreach ($goals as $goal) {
         $title[$i] = $goal['name'];
-        $iframe_height[$i] = 370;
         $data_params[$i] = $common_data_params;
         $data_params[$i]['moduleToWidgetize'] = 'Goals';
         $data_params[$i]['actionToWidgetize'] = 'widgetGoalReport';
@@ -277,7 +283,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
     $theme_args['data_url'][] = array(
       'url' => $piwik_url . 'index.php?' . drupal_http_build_query($data),
       'title' => $title[$key],
-      'iframe_height' => (isset($iframe_height[$key]) && $iframe_height[$key] > 0 ? $iframe_height[$key] : 350),
+      'iframe_height' => (isset($iframe_height[$key]) && $iframe_height[$key] > 0 ? $iframe_height[$key] : 400),
       'empty_text' => (isset($empty_text) ? $empty_text : NULL),
     );
   }
