@@ -14,6 +14,6 @@
   else {
     ?>
     <h2><?php print $data['title']; ?></h2>
-    <div class="widgetIframe"><iframe width="100%" height="<?php print $data['iframe_height'] . '" src="' . $data['url']; ?>" scrolling="yes" frameborder="0" marginheight="0" marginwidth="0"></iframe></div>
+    <div class="widgetIframe"><iframe style="border: 0px none; width: 100%; height: <?php print $data['iframe_height'] . 'px;" src="' . $data['url'];?>" scrolling="auto" frameborder="0"></iframe></div>
   <?php }
   }
