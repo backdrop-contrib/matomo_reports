@@ -42,7 +42,8 @@ function piwik_reports_menu() {
   // Reports:
   $items['admin/reports/piwik_reports'] = array(
     'title' => 'Piwik web analytics',
-    'page callback' => 'piwik_reports_menu_block_page',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('piwik_reports_reports', 'visitors_overview'),
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'description' => 'Reports on your website visitors, your popular pages, the search engines keywords they used... and so much more.',
@@ -55,7 +56,7 @@ function piwik_reports_menu() {
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 1,
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/visitors/overview'] = array(
     'title' => 'Overview',
@@ -109,7 +110,7 @@ function piwik_reports_menu() {
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 2,
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/actions/pages'] = array(
     'title' => 'Pages',
@@ -163,7 +164,7 @@ function piwik_reports_menu() {
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 3,
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/referers/evolution'] = array(
     'title' => 'Evolution',
@@ -208,7 +209,7 @@ function piwik_reports_menu() {
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 4,
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_LOCAL_TASK,
   );
   // If piwik is installed, group with it, otherwise not.
   if (module_exists('piwik')) {

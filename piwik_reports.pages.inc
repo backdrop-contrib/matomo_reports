@@ -6,21 +6,6 @@
  */
 
 /**
- * Report menu links.
- */
-function piwik_reports_menu_block_page() {
-  $item = menu_get_item();
-  if ($content = system_admin_menu_block($item)) {
-    $output = theme('admin_block_content', array('content' => $content));
-  }
-  else {
-    $output = '<p>' . t('You do not have any reports.') . '</p>';
-  }
-
-  return $output;
-}
-
-/**
  * Return the form where to select the report period.
  */
 function piwik_reports_dateselect_form() {
