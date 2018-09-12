@@ -234,13 +234,13 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[0]['filter_limit'] = 15;
       break;
 
-    case 'referers_evolution':
+    case 'referrers_evolution':
       $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Referrers';
       $data_params[0]['actionToWidgetize'] = 'getReferrerType';
       break;
 
-    case 'referers_search':
+    case 'referrers_search':
       $data_params[1] = $data_params[0];
 
       $title[0] = t('Search engines');
@@ -252,7 +252,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[1]['actionToWidgetize'] = 'getKeywords';
       break;
 
-    case 'referers_websites':
+    case 'referrers_websites':
       $title[0] = '';
       $iframe_height[0] = 1020;
       $data_params[0]['moduleToWidgetize'] = 'Referrers';
