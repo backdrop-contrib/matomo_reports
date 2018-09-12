@@ -56,29 +56,33 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
       $session_site_exists = TRUE;
     }
   }
-  if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '' || !$session_site_exists) {
-    $_SESSION['piwik_reports_site'] = $sites[0]['idsite'];
+  if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '' || !$session_site_exists || !in_array($_SESSION['piwik_reports_site'], $allowed_keys)) {
+    // When not set, set to first of the allowed sites.
+    $_SESSION['piwik_reports_site'] = $allowed_keys[0];
   }
   if (count($options) > 1) {
     $form['basic']['inline']['site'] = array(
       '#type' => 'select',
-      '#title' => t('Site: '),
+      '#title' => t('Site:'),
       '#weight' => -5,
       '#default_value' => $_SESSION['piwik_reports_site'],
       '#options' => $options,
     );
   }
   elseif (count($options) == 1) {
+    foreach ($options as $siteid => $sitename) {
+      break;
+    }
     $form['basic']['inline']['site'] = array(
       '#type' => 'hidden',
-      '#value' => $_SESSION['piwik_reports_site'],
+      '#value' => $siteid,
     );
     $form['basic']['inline']['sitename'] = array(
       '#type' => 'textfield',
-      '#title' => t('Site: '),
+      '#title' => t('Site:'),
       '#weight' => -5,
       '#size' => 25,
-      '#value' => $sites[0]['name'],
+      '#value' => $sitename,
       '#disabled' => TRUE,
     );
   }
