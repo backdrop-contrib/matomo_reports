@@ -41,7 +41,7 @@ function piwik_reports_permission() {
 function piwik_reports_menu() {
   // Reports:
   $items['admin/reports/piwik_reports'] = array(
-    'title' => 'Piwik web analytics',
+    'title' => 'Piwik Web Analytics',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'visitors_overview'),
     'access arguments' => array('access piwik reports'),
@@ -86,7 +86,7 @@ function piwik_reports_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/visitors/locations'] = array(
-    'title' => 'Locations provider',
+    'title' => 'Locations Provider',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'visitors_locations'),
     'access arguments' => array('access piwik reports'),
@@ -95,7 +95,7 @@ function piwik_reports_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/visitors/variables'] = array(
-    'title' => 'Custom variables',
+    'title' => 'Custom Variables',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'custom_variables'),
     'access arguments' => array('access piwik reports'),
@@ -122,7 +122,7 @@ function piwik_reports_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/actions/entrypages'] = array(
-    'title' => 'Entry pages',
+    'title' => 'Entry Pages',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'actions_entryurls'),
     'access arguments' => array('access piwik reports'),
@@ -131,7 +131,7 @@ function piwik_reports_menu() {
     'type' => MENU_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/actions/exitpages'] = array(
-    'title' => 'Exit pages',
+    'title' => 'Exit Pages',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'actions_exiturls'),
     'access arguments' => array('access piwik reports'),
@@ -176,7 +176,7 @@ function piwik_reports_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['admin/reports/piwik_reports/referrers/search'] = array(
-    'title' => 'Search engines & keywords',
+    'title' => 'Search Engines & Keywords',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('piwik_reports_reports', 'referrers_search'),
     'access arguments' => array('access piwik reports'),
@@ -235,7 +235,7 @@ function piwik_reports_menu() {
   }
   else {
     $items['admin/config/system/piwik_reports'] = array(
-      'title' => 'Piwik reports',
+      'title' => 'Piwik Reports',
       'description' => 'Configure the settings for your Piwik reports.',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('piwik_reports_admin_settings_form'),
