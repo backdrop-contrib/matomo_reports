@@ -106,7 +106,7 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
 function piwik_reports_reports($form, &$form_state, $report) {
   global $user;
 
-  $piwik_auth = (variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']);
+  $piwik_auth = (check_plain(variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']));
   $piwik_url = piwik_reports_get_url();
   $sites = piwik_reports_get_sites($piwik_auth);
   if (empty($sites)) {
