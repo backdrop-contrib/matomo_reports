@@ -18,22 +18,23 @@ function piwik_reports_dateselect_form() {
     4 => t('Last year'),
   );
 
-  $form['#attributes'] = array('class' => array('search-form'));
-  $form['basic'] = array(
+  $form['#attributes'] = array(
+    'class' => array(
+      'search-form',
+      'container-inline',
+    ),
+  );
+  $form['piwik_filters'] = array(
     '#type' => 'fieldset',
     '#title' => t('Select site and time period'),
   );
-  $form['basic']['inline'] = array(
-    '#prefix' => '<div class="container-inline">',
-    '#suffix' => '</div>',
-  );
-  $form['basic']['inline']['period'] = array(
+  $form['piwik_filters']['period'] = array(
     '#type' => 'select',
     '#title' => '',
     '#default_value' => isset($_SESSION['piwik_reports_period']) ? $_SESSION['piwik_reports_period'] : 0,
     '#options' => $period,
   );
-  $form['basic']['inline']['submit'] = array(
+  $form['piwik_filters']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Filter'),
     '#weight' => 15,
@@ -61,7 +62,7 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
     $_SESSION['piwik_reports_site'] = $allowed_keys[0];
   }
   if (count($options) > 1) {
-    $form['basic']['inline']['site'] = array(
+    $form['piwik_filters']['site'] = array(
       '#type' => 'select',
       '#title' => t('Site:'),
       '#weight' => -5,
@@ -73,11 +74,11 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
     foreach ($options as $siteid => $sitename) {
       break;
     }
-    $form['basic']['inline']['site'] = array(
+    $form['piwik_filters']['site'] = array(
       '#type' => 'hidden',
       '#value' => $siteid,
     );
-    $form['basic']['inline']['sitename'] = array(
+    $form['piwik_filters']['sitename'] = array(
       '#type' => 'textfield',
       '#title' => t('Site:'),
       '#weight' => -5,
