@@ -271,7 +271,7 @@ function piwik_reports_menu_alter(&$items) {
  */
 function piwik_reports_block_info() {
   $blocks['piwik_page_report'] = array(
-    'info' => t('Piwik page report'),
+    'info' => t('Piwik Page Statistics'),
     'cache' => DRUPAL_NO_CACHE,
   );
   return $blocks;
@@ -285,7 +285,7 @@ function piwik_reports_block_view($delta = '') {
 
   switch ($delta) {
     case 'piwik_page_report':
-      $block['subject'] = t('Piwik page statistics');
+      $block['subject'] = t('Piwik Page Statistics');
       if (!module_exists('piwik')) {
         $block['content'] = t('To use this block you need to install <a href="!url">Piwik</a> module', array('!url' => 'http://www.drupal.org/project/piwik'));
         return $block;
