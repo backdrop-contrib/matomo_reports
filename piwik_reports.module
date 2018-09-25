@@ -139,6 +139,15 @@ function piwik_reports_menu() {
     'weight' => 2,
     'type' => MENU_LOCAL_TASK,
   );
+  $items['admin/reports/piwik_reports/actions/sitesearch'] = array(
+    'title' => 'Site Search',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('piwik_reports_reports', 'actions_sitesearch'),
+    'access arguments' => array('access piwik reports'),
+    'file' => 'piwik_reports.pages.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+  );
   $items['admin/reports/piwik_reports/actions/outlinks'] = array(
     'title' => 'Outlinks',
     'page callback' => 'drupal_get_form',
@@ -160,16 +169,16 @@ function piwik_reports_menu() {
   $items['admin/reports/piwik_reports/referrers'] = array(
     'title' => 'Referrers',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('piwik_reports_reports', 'referrers_evolution'),
+    'page arguments' => array('piwik_reports_reports', 'referrers_overview'),
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 3,
     'type' => MENU_LOCAL_TASK,
   );
-  $items['admin/reports/piwik_reports/referrers/evolution'] = array(
-    'title' => 'Evolution',
+  $items['admin/reports/piwik_reports/referrers/overview'] = array(
+    'title' => 'Overview',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('piwik_reports_reports', 'referrers_evolution'),
+    'page arguments' => array('piwik_reports_reports', 'referrers_overview'),
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 1,
@@ -193,19 +202,10 @@ function piwik_reports_menu() {
     'weight' => 3,
     'type' => MENU_LOCAL_TASK,
   );
-  $items['admin/reports/piwik_reports/referrers/websites'] = array(
-    'title' => 'Websites',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('piwik_reports_reports', 'referrers_websites'),
-    'access arguments' => array('access piwik reports'),
-    'file' => 'piwik_reports.pages.inc',
-    'weight' => 3,
-    'type' => MENU_LOCAL_TASK,
-  );
   $items['admin/reports/piwik_reports/goals'] = array(
     'title' => 'Goals',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('piwik_reports_reports', 'goals_evolution'),
+    'page arguments' => array('piwik_reports_reports', 'goals'),
     'access arguments' => array('access piwik reports'),
     'file' => 'piwik_reports.pages.inc',
     'weight' => 4,

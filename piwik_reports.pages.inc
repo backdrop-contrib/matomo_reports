@@ -147,10 +147,11 @@ function piwik_reports_reports($form, &$form_state, $report) {
 
   switch ($report) {
     case 'visitors_overview':
+      $iframe_height[0] = 950;
       $title[0] = t('Visits trend');
       $data_params[0]['columns[]'] = 'nb_visits';
       $data_params[0]['moduleToWidgetize'] = 'VisitsSummary';
-      $data_params[0]['actionToWidgetize'] = 'getEvolutionGraph';
+      $data_params[0]['actionToWidgetize'] = 'index';
       break;
 
     case 'visitors_times':
@@ -223,6 +224,30 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[0]['filter_limit'] = 15;
       break;
 
+    case 'actions_sitesearch':
+      $data_params[1] = $data_params[0];
+      $data_params[2] = $data_params[0];
+      $data_params[3] = $data_params[0];
+
+      $title[0] = t('Site Search Keywords');
+      $iframe_height[0] = 750;
+      $data_params[0]['moduleToWidgetize'] = 'Actions';
+      $data_params[0]['actionToWidgetize'] = 'getSiteSearchKeywords';
+      $data_params[0]['filter_limit'] = 15;
+      // Pages following search.
+      $title[1] = t('Pages Following a Site Search');
+      $data_params[1]['moduleToWidgetize'] = 'Actions';
+      $data_params[1]['actionToWidgetize'] = 'getPageUrlsFollowingSiteSearch';
+      // No results.
+      $title[2] = t('Site Search No Result Keyword');
+      $data_params[2]['moduleToWidgetize'] = 'Actions';
+      $data_params[2]['actionToWidgetize'] = 'getSiteSearchNoResultKeywords';
+      // Categories.
+      $title[3] = t('Site Search Categories');
+      $data_params[3]['moduleToWidgetize'] = 'Actions';
+      $data_params[3]['actionToWidgetize'] = 'getSiteSearchCategories';
+      break;
+
     case 'actions_outlinks':
       $title[0] = '';
       $iframe_height[0] = 750;
@@ -239,10 +264,16 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[0]['filter_limit'] = 15;
       break;
 
-    case 'referrers_evolution':
+    case 'referrers_overview':
+      $data_params[1] = $data_params[0];
+      // Types.
       $title[0] = '';
       $data_params[0]['moduleToWidgetize'] = 'Referrers';
       $data_params[0]['actionToWidgetize'] = 'getReferrerType';
+      // Referrers.
+      $title[1] = t('Referrers');
+      $data_params[1]['moduleToWidgetize'] = 'Referrers';
+      $data_params[1]['actionToWidgetize'] = 'getAll';
       break;
 
     case 'referrers_search':
@@ -258,13 +289,18 @@ function piwik_reports_reports($form, &$form_state, $report) {
       break;
 
     case 'referrers_websites':
+      $data_params[1] = $data_params[0];
       $title[0] = '';
       $iframe_height[0] = 1020;
       $data_params[0]['moduleToWidgetize'] = 'Referrers';
       $data_params[0]['actionToWidgetize'] = 'getWebsites';
+
+      $title[1] = t('Social Networks');
+      $data_params[1]['moduleToWidgetize'] = 'Referrers';
+      $data_params[1]['actionToWidgetize'] = 'getSocials';
       break;
 
-    case 'goals_evolution':
+    case 'goals':
       $goals = piwik_reports_get_goals($piwik_auth, $_SESSION['piwik_reports_site']);
       if (count($goals) == 0) {
         $empty_text = t('No goals have been set. Check with your Piwik server administrator if you desire some.');
