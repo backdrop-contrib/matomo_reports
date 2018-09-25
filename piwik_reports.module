@@ -459,17 +459,17 @@ function piwik_reports_admin_settings_form($form_state) {
   );
   if (is_array($sites) && count($sites)) {
     if (variable_get('piwik_reports_token_auth', '') != '') {
-      $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t('Sites currently accessible with global token_auth are:');
+      $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= ' ' . t('Sites currently accessible with global token_auth are:');
     }
     else {
-      $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t('Sites currently accessible as anonymous are:');
+      $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= ' ' . t('Sites currently accessible as anonymous are:');
     }
     foreach ($sites as $site) {
       $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= '<br />' . (int) $site['idsite'] . ' - ' . check_plain($site['name']);
     }
   }
   else {
-    $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= t('No accessible sites are available with current global token auth. Please check your token auth is correct and that it has view permission on Piwik server.');
+    $form['piwik_reports_sites']['piwik_reports_allowed_sites']['#description'] .= ' ' . t('No accessible sites are available with current global token auth. Please check your token auth is correct and that it has view permission on Piwik server.');
   }
   return system_settings_form($form);
 }
