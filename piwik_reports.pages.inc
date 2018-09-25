@@ -124,7 +124,7 @@ function piwik_reports_reports($form, &$form_state, $report) {
   $data_params[0]['action'] = 'iframe';
   $data_params[0]['disableLink'] = 1;
   $data_params[0]['widget'] = 1;
-  // $data_params[0]['loading'] = t('Loading data...');.
+
   if (!empty($piwik_auth)) {
     $data_params[0]['token_auth'] = $piwik_auth;
   }
@@ -152,19 +152,19 @@ function piwik_reports_reports($form, &$form_state, $report) {
       $data_params[3] = $data_params[0];
       // Browser families.
       $title[0] = t('Browser families');
-      $data_params[0]['moduleToWidgetize'] = 'UserSettings';
-      $data_params[0]['actionToWidgetize'] = 'getBrowserType';
+      $data_params[0]['moduleToWidgetize'] = 'DevicesDetection';
+      $data_params[0]['actionToWidgetize'] = 'getBrowserEngines';
       // Screen resolutions.
       $title[1] = t('Screen resolution');
-      $data_params[1]['moduleToWidgetize'] = 'UserSettings';
+      $data_params[1]['moduleToWidgetize'] = 'Resolution';
       $data_params[1]['actionToWidgetize'] = 'getConfiguration';
       // Operating systems.
       $title[2] = t('Operating system');
-      $data_params[2]['moduleToWidgetize'] = 'UserSettings';
-      $data_params[2]['actionToWidgetize'] = 'getOS';
+      $data_params[2]['moduleToWidgetize'] = 'DevicesDetection';
+      $data_params[2]['actionToWidgetize'] = 'getOsVersions';
       // Client configurations.
       $title[3] = t('Client configuration');
-      $data_params[3]['moduleToWidgetize'] = 'UserSettings';
+      $data_params[3]['moduleToWidgetize'] = 'Resolution';
       $data_params[3]['actionToWidgetize'] = 'getResolution';
       break;
 
