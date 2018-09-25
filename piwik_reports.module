@@ -301,8 +301,8 @@ function piwik_reports_block_view($delta = '') {
       drupal_add_js(drupal_get_path('module', 'piwik_reports') . '/piwik_reports.js');
       // Build the data URL with all params.
       global $user;
-      $piwik_auth = check_plain(variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']);
       $piwik_url = variable_get('piwik_url_http', '');
+      $piwik_auth = check_plain(variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : (isset($user->data['piwik_reports_token_auth']) ? $user->data['piwik_reports_token_auth'] : ''));
 
       $data_params = array();
       $data_params['idSite'] = variable_get('piwik_site_id', '');
