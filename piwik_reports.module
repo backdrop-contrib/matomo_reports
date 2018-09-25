@@ -426,13 +426,13 @@ function piwik_reports_admin_settings_form($form_state) {
     '#weight' => 1,
     '#description' => t('The URL to your Piwik base directory. Example: "http://www.example.com/piwik/".'),
   );
-  $form['piwik_reports'] = array(
+  $form['piwik_reports_token'] = array(
     '#type' => 'fieldset',
     '#title' => t('Token auth'),
     '#weight' => 5,
     '#description' => t('To see piwik reports in Drupal you need a <strong>token_auth</strong> value. You can find it in the  <strong>Users</strong> tab under the <strong>Settings</strong> link in your Piwik account or ask your Piwik server administrator.'),
   );
-  $form['piwik_reports']['piwik_reports_token_auth'] = array(
+  $form['piwik_reports_token']['piwik_reports_token_auth'] = array(
     '#type' => 'textfield',
     '#title' => t('Piwik authentication string'),
     '#default_value' => check_plain(variable_get('piwik_reports_token_auth', '')),
