@@ -6,15 +6,20 @@
  */
 
 /**
- * Remove dead global period setting, moved into user $_SESSION['piwik_reports_period'] value.
+ * Implements hook_uninstall().
  */
-function piwik_reports_update_6000() {
-  $ret = array();
+function piwik_reports_uninstall() {
+  variable_del('piwik_reports_allowed_sites');
+  variable_del('piwik_reports_token_auth');
+  variable_del('piwik_reports_url_http');
+}
 
+/**
+ * Remove dead global period setting, moved into user
+ * $_SESSION['piwik_reports_period'] value.
+ */
+function piwik_reports_update_7000() {
   variable_del('piwik_reports_period');
 
-  // hook_update_N() no longer returns a $ret array. Instead, return
-  // nothing or a translated string indicating the update ran successfully.
-  // See http://drupal.org/node/224333#update_sql.
-  return t('TODO Add a descriptive string here to show in the UI.'); /* $ret */
+  return t('Removed unused variable.');
 }
