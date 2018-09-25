@@ -430,7 +430,7 @@ function piwik_reports_admin_settings_form($form_state) {
   }
   $form['piwik_reports_server']['piwik_reports_url_http'] = array(
     '#type' => 'textfield',
-    '#title' => t('Piwik HTTP URL'),
+    '#title' => t('Piwik Server URL'),
     '#default_value' => variable_get('piwik_reports_url_http', ''),
     '#size' => 80,
     '#maxlength' => 255,
