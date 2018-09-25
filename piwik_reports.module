@@ -298,11 +298,10 @@ function piwik_reports_block_view($delta = '') {
       if (!user_access('access piwik reports')) {
         return;
       }
-      drupal_add_js(drupal_get_path('module', 'piwik_reports') . '/piwik_reports.js');
       // Build the data URL with all params.
       global $user;
-      $piwik_url = variable_get('piwik_url_http', '');
       $piwik_auth = check_plain(variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : (isset($user->data['piwik_reports_token_auth']) ? $user->data['piwik_reports_token_auth'] : ''));
+      $piwik_url = variable_get('piwik_reports_url_http', '');
 
       $data_params = array();
       $data_params['idSite'] = variable_get('piwik_site_id', '');
@@ -315,10 +314,22 @@ function piwik_reports_block_view($delta = '') {
       if (!empty($piwik_auth)) {
         $data_params['token_auth'] = $piwik_auth;
       }
-
       $data_url = $piwik_url . 'index.php?' . drupal_http_build_query($data_params) . '&jsoncallback=?';
-      drupal_add_js(array('piwik_reports' => array('url' => $data_url)), 'setting');
-      $block['content'] = '<div id="piwikpageviews">x</div>';
+      $block['content'] = array(
+        '#markup' => '<div id="piwikpageviews"></div>',
+        '#attached' => array(
+          'js' => array(
+            array(
+              'type' => 'setting',
+              'data' => array('piwik_reports' => array('url' => $data_url)),
+            ),
+            array(
+              'data' => drupal_get_path('module', 'piwik_reports') . '/piwik_reports.js',
+              'type' => 'file',
+            ),
+          ),
+        ),
+      );
       break;
   }
   return $block;
@@ -359,7 +370,7 @@ function piwik_reports_form_alter(&$form, $form_state, $form_id) {
       '#default_value' => (!empty($account->data['piwik_reports_token_auth'])) ? $account->data['piwik_reports_token_auth'] : '',
       '#size' => 40,
       '#maxlength' => 40,
-      '#description' => t('Click the <strong>Settings</strong> link in your Piwik account, then the <strong>Users</strong> tab and copy and paste your personal <strong>token_auth</strong> value into this field. If anonymous users have view permissions in Piwik you can set this value to <strong>anonymous</strong>. Or just ask the Piwik server administrator.'),
+      '#description' => t('Click the <strong>Settings</strong> link in your Piwik account, then the <strong>Users</strong> tab and copy and paste your personal <strong>token_auth</strong> value into this field. If anonymous users have view permissions in Piwik, you can set this value to <strong>anonymous</strong> or ask the Piwik server administrator for a token value.'),
     );
   }
   elseif ($form_id == 'piwik_admin_settings_form') {
@@ -382,6 +393,7 @@ function piwik_reports_any_access($arguments) {
       return TRUE;
     }
   }
+  return FALSE;
 }
 
 /**

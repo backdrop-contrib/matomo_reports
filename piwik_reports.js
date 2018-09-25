@@ -3,22 +3,22 @@
   Drupal.behaviors.piwik_reports = {
     attach: function(context, settings) {
 
-      var pk_url = settings.piwik_reports.url
-      var data
-      var header = "<table class='sticky-enabled sticky-table'><tbody></tbody></table>";
-      var item
+      var pk_url = settings.piwik_reports.url;
+      var data;
+      var header = '<table class="sticky-enabled sticky-table" width="100%"><tbody></tbody></table>';
       
       // Add the table and show "Loading data..." status message for long running requests.
       $("#piwikpageviews").html(header);
       $("#piwikpageviews > table > tbody").html("<tr><td>" + Drupal.t('Loading data...') + "</td></tr>");
 
       // Get data from remote Piwik server.
-      $.getJSON(pk_url, function(data){ 
+      $.getJSON(pk_url, function(data){
+        var item = '';
         $.each(data, function(key, val) {
           item = val;
         });
         var pk_content = "";
-        if (item != undefined) {
+        if (item != '') {
           if (item.nb_visits) {
             pk_content += "<tr><td>" + Drupal.t('Visits') + "</td>";
             pk_content += "<td>" + item.nb_visits + "</td></tr>" ;
