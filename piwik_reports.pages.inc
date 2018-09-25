@@ -6,23 +6,41 @@
  */
 
 /**
- * Return the form where to select the report period.
+ * Return the $form that handles piwik reports.
+ *
+ * @param array $form
+ *   See form API.
+ * @param array $form_state
+ *   See form API.
+ * @param string $report
+ *   The report name.
+ *
+ * @return array
+ *   See form API.
  */
-function piwik_reports_dateselect_form() {
+function piwik_reports_reports($form, &$form_state, $report) {
+  global $user;
 
+  $piwik_auth = (check_plain(variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']));
+  $piwik_url = piwik_reports_get_url();
+  $sites = piwik_reports_get_sites($piwik_auth);
+  if (empty($sites)) {
+    $_SESSION['piwik_reports_site'] == '';
+    drupal_set_message(t('You cannot access any data on the selected Piwik server. Please check authentication string and permissions with your Piwik server administrator.'), 'warning');
+    return;
+  }
+  $form['#attributes'] = array(
+    'class' => array(
+      'search-form',
+      'container-inline',
+    ),
+  );
   $period = array(
     0 => t('Today'),
     1 => t('Yesterday'),
     2 => t('Last week'),
     3 => t('Last month'),
     4 => t('Last year'),
-  );
-
-  $form['#attributes'] = array(
-    'class' => array(
-      'search-form',
-      'container-inline',
-    ),
   );
   $form['piwik_filters'] = array(
     '#type' => 'fieldset',
@@ -34,18 +52,6 @@ function piwik_reports_dateselect_form() {
     '#default_value' => isset($_SESSION['piwik_reports_period']) ? $_SESSION['piwik_reports_period'] : 0,
     '#options' => $period,
   );
-  $form['piwik_filters']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Filter'),
-    '#weight' => 15,
-  );
-  return $form;
-}
-
-/**
- * Return the form where to select the site.
- */
-function piwik_reports_siteselect_form($form = array(), $sites = array()) {
   $options = array();
   $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites', ''));
   $session_site_exists = FALSE;
@@ -86,36 +92,14 @@ function piwik_reports_siteselect_form($form = array(), $sites = array()) {
       '#value' => $sitename,
       '#disabled' => TRUE,
     );
+    $form['piwik_filters']['period']['#attributes'] = ['onchange' => 'this.form.submit();'];
   }
-  return $form;
-}
+  $form['piwik_filters']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Filter'),
+    '#weight' => 15,
+  );
 
-/**
- * Return the $form that handles piwik reports.
- *
- * @param array $form
- *   See form API.
- * @param array $form_state
- *   See form API.
- * @param string $report
- *   The report name.
- *
- * @return array
- *   See form API.
- */
-function piwik_reports_reports($form, &$form_state, $report) {
-  global $user;
-
-  $piwik_auth = (check_plain(variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']));
-  $piwik_url = piwik_reports_get_url();
-  $sites = piwik_reports_get_sites($piwik_auth);
-  if (empty($sites)) {
-    $_SESSION['piwik_reports_site'] == '';
-    drupal_set_message(t('You cannot access any data on the selected Piwik server. Please check authentication string and permissions with your Piwik server administrator.'), 'warning');
-    return;
-  }
-  $form = piwik_reports_dateselect_form();
-  $form = piwik_reports_siteselect_form($form, $sites);
   $piwik_site_id = $_SESSION['piwik_reports_site'];
   $period = isset($_SESSION['piwik_reports_period']) ? $_SESSION['piwik_reports_period'] : 0;
 
