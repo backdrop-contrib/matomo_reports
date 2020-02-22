@@ -304,27 +304,22 @@ function matomo_reports_reports(array $form, array &$form_state, $report) {
       }
       break;
   }
-dpm($data_params, '$data_params');
   // Build the data URL with all params and urlencode it.
   $theme_args = array();
   foreach ($data_params as $key => $data) {
-dpm($data, '$data');
-//      <iframe src="https://matomo.techccessible.com/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Dashboard&actionToWidgetize=index&idSite=22&period=week&date=yesterday" frameborder="0" marginheight="0" marginwidth="0" width="100%" height="100%"></iframe>
     $data['moduleToWidgetize'] = 'Dashboard';
     $data['actionToWidgetize'] = 'index';
     unset($data['disableLink']);
     unset($data['widget']);
     unset($data['filter_limit']);
     $theme_args['data_url'][] = array(
-//      'url' => $matomo_url . 'index.php?' . backdrop_http_build_query($data),
-      'url' => 'https://matomo.techccessible.com/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Dashboard&actionToWidgetize=index&idSite=22&period=week&date=yesterday&token_auth=6f2eac9d3f375ec74886fa9d1289742c',
+      'url' => $matomo_url . 'index.php?' . backdrop_http_build_query($data),
       'title' => $title[$key],
       'iframe_height' => (isset($iframe_height[$key]) && $iframe_height[$key] > 0 ? $iframe_height[$key] : 400),
       'empty_text' => (isset($empty_text) ? $empty_text : NULL),
     );
   }
   // Render HTML code.
-dpm($theme_args, '$theme_args');
   $output = theme('matomo_reports', $theme_args);
   $form['content'] = array(
     '#type' => 'item',
