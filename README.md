@@ -56,21 +56,21 @@ https://github.com/backdrop-contrib/matomo_reports/issues.
 Current Maintainers
 -------------------
 
-- [Jason Flatt](https://github.com/oadaeh).
+- [Jason Flatt](https://github.com/oadaeh)
 - You?
 
 
 Credits
 -------
 
-- Ported to Backdrop CMS by [Jason Flatt](https://github.com/oadaeh).
-- Originally written for Drupal by [xlyz](https://www.drupal.org/u/xlyz).
-- Currently maintained for Drupal by [shelane](https://www.drupal.org/u/shelane).
+- Ported to Backdrop CMS by [Jason Flatt](https://github.com/oadaeh)
+- Originally written for Drupal by [xlyz](https://www.drupal.org/u/xlyz)
+- Currently maintained for Drupal by [shelane](https://www.drupal.org/u/shelane)
 - Drupal work sponsored by [Relinc](http://www.relinc.it)
 
 
 License
 -------
 
-This project is GPL v2 software.
-See the LICENSE.txt file in this directory for complete text.
+This project is GPL v2 software. See the LICENSE.txt file in this directory for
+complete text.
