@@ -1,0 +1,6 @@
+{
+    "_config_name": "matomo_reports.settings",
+    "matomo_reports_token_auth": "",
+    "matomo_reports_url_http": "",
+    "matomo_reports_allowed_sites": ""
+}

@@ -1,0 +1,595 @@
+<?php
+
+/**
+ * @file
+ * Defines features and functions common to Matomo Reports.
+ */
+
+/**
+ * Implements hook_config_info().
+ */
+function matomo_reports_config_info() {
+  $prefixes['matomo_reports.settings'] = array(
+    'label' => t('Module name settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_help().
+ */
+function matomo_reports_help($path, $arg) {
+  global $user;
+
+  switch ($path) {
+    case (arg(0) == 'admin' && arg(1) == 'reports' && arg(2) == 'matomo_reports'):
+      if ($user->uid && empty($user->data['matomo_reports_token_auth']) && (config_get('matomo_reports.settings', 'matomo_reports_token_auth') == '')) {
+        backdrop_set_message(t('You need to configure your <em>Matomo authentication string</em> on the <a href="@user-edit">My account</a> page.', array('@user-edit' => url('user/' . $user->uid . '/edit'))), 'warning', FALSE);
+      }
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function matomo_reports_permission() {
+  return array(
+    'access matomo reports' => array(
+      'title' => t('Access Matomo Reports'),
+      'description' => t('Allow access to Matomo Reports module.'),
+    ),
+    'administer matomo reports' => array(
+      'title' => t('Administer Matomo Reports'),
+      'description' => t('Perform basic configuration tasks for the Matomo Reports module.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function matomo_reports_menu() {
+  // Reports:
+  $items['admin/reports/matomo_reports'] = array(
+    'title' => 'Matomo Web Analytics',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'visitors_overview'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'description' => 'Reports on your website visitors, your popular pages, the search engines keywords they used... and so much more.',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/reports/matomo_reports/visitors'] = array(
+    'title' => 'Visitors',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'visitors_overview'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 1,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/visitors/overview'] = array(
+    'title' => 'Overview',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'visitors_overview'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 1,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/visitors/settings'] = array(
+    'title' => 'Settings',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'visitors_settings'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/visitors/times'] = array(
+    'title' => 'Times',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'visitors_times'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/visitors/locations'] = array(
+    'title' => 'Locations Provider',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'visitors_locations'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 4,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/visitors/variables'] = array(
+    'title' => 'Custom Variables',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'custom_variables'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 5,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/actions'] = array(
+    'title' => 'Actions',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'actions_pageurls'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/actions/pages'] = array(
+    'title' => 'Pages',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'actions_pageurls'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 1,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/actions/entrypages'] = array(
+    'title' => 'Entry Pages',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'actions_entryurls'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/actions/exitpages'] = array(
+    'title' => 'Exit Pages',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'actions_exiturls'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/actions/sitesearch'] = array(
+    'title' => 'Site Search',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'actions_sitesearch'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/actions/outlinks'] = array(
+    'title' => 'Outlinks',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'actions_outlinks'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/actions/downloads'] = array(
+    'title' => 'Downloads',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'actions_downloads'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 4,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/referrers'] = array(
+    'title' => 'Referrers',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'referrers_overview'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/referrers/overview'] = array(
+    'title' => 'Overview',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'referrers_overview'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 1,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/referrers/search'] = array(
+    'title' => 'Search Engines & Keywords',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'referrers_search'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 2,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/referrers/websites'] = array(
+    'title' => 'Websites',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'referrers_websites'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['admin/reports/matomo_reports/goals'] = array(
+    'title' => 'Goals',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_reports', 'goals'),
+    'access arguments' => array('access matomo reports'),
+    'file' => 'matomo_reports.pages.inc',
+    'weight' => 4,
+    'type' => MENU_LOCAL_TASK,
+  );
+  // If matomo is installed, group with it, otherwise not.
+  if (module_exists('matomo')) {
+    $items['admin/config/system/matomo/tracking'] = array(
+      'title' => 'Tracking',
+      'type' => MENU_NORMAL_ITEM,
+      'description' => 'Configure the settings used to generate your Matomo tracking code.',
+      'page callback' => 'backdrop_get_form',
+      'access arguments' => array('administer matomo'),
+      'page arguments' => array('matomo_admin_settings_form'),
+      'file path' => backdrop_get_path('module', 'matomo'),
+      'file' => 'matomo.admin.inc',
+      'weight' => -10,
+    );
+    $items['admin/config/system/matomo/reports'] = array(
+      'title' => 'Reports',
+      'description' => 'Configure the settings for your Matomo reports.',
+      'page callback' => 'backdrop_get_form',
+      'page arguments' => array('matomo_reports_admin_settings_form'),
+      'access arguments' => array('administer matomo reports'),
+      'type' => MENU_NORMAL_ITEM,
+      'weight' => 10,
+    );
+  }
+  else {
+    $items['admin/config/system/matomo_reports'] = array(
+      'title' => 'Matomo Reports',
+      'description' => 'Configure the settings for your Matomo reports.',
+      'page callback' => 'backdrop_get_form',
+      'page arguments' => array('matomo_reports_admin_settings_form'),
+      'access arguments' => array('administer matomo reports'),
+      'type' => MENU_NORMAL_ITEM,
+    );
+  }
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function matomo_reports_menu_alter(&$items) {
+  if (module_exists('matomo')) {
+    $items['admin/config/system/matomo'] = array(
+      'title' => 'Matomo',
+      'description' => 'Configure the settings for Matomo.',
+      'access arguments' => array(
+        array(
+          'administer matomo',
+          'administer matomo reports',
+        ),
+      ),
+      'access callback' => 'matomo_reports_any_access',
+      'type' => MENU_NORMAL_ITEM,
+    );
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function matomo_reports_block_info() {
+  $blocks['matomo_page_report'] = array(
+    'info' => t('Matomo Page Statistics'),
+    'cache' => BACKDROP_NO_CACHE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function matomo_reports_block_view($delta = '') {
+  $config = config('matomo_reports.settings');
+  $block = array();
+
+  switch ($delta) {
+    case 'matomo_page_report':
+      $block['subject'] = t('Matomo Page Statistics');
+      if (!module_exists('matomo')) {
+        $block['content'] = t('To use this block you need to install <a href="!url">Matomo</a> module', array('!url' => 'http://www.drupal.org/project/matomo'));
+        return $block;
+      }
+      if ($router_item = menu_get_item()) {
+        if ($router_item['access'] != TRUE) {
+          return;
+        }
+      }
+      if (!user_access('access matomo reports')) {
+        return;
+      }
+      // Build the data URL with all params.
+      global $user;
+      $matomo_auth = check_plain($config->get('matomo_reports_token_auth') ? $config->get('matomo_reports_token_auth') : (isset($user->data['matomo_reports_token_auth']) ? $user->data['matomo_reports_token_auth'] : ''));
+      $matomo_url = $config->get('matomo_reports_url_http');
+
+      $data_params = array();
+      $data_params['idSite'] = config_get('matomo.settings', 'site_id');
+      $data_params['date'] = 'today';
+      $data_params['period'] = 'year';
+      $data_params['module'] = 'API';
+      $data_params['method'] = 'Actions.getPageUrl';
+      $data_params['pageUrl'] = urldecode($_SERVER['REQUEST_URI']);
+      $data_params['format'] = 'JSON';
+      if (!empty($matomo_auth)) {
+        $data_params['token_auth'] = $matomo_auth;
+      }
+      $data_url = $matomo_url . 'index.php?' . backdrop_http_build_query($data_params) . '&jsoncallback=?';
+      $block['content'] = array(
+        '#markup' => '<div id="matomopageviews"></div>',
+        '#attached' => array(
+          'js' => array(
+            array(
+              'type' => 'setting',
+              'data' => array('matomo_reports' => array('url' => $data_url)),
+            ),
+            array(
+              'data' => backdrop_get_path('module', 'matomo_reports') . '/js/matomo_reports.js',
+              'type' => 'file',
+            ),
+          ),
+        ),
+      );
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function matomo_reports_theme() {
+  return array(
+    'matomo_reports' => array(
+      'template' => 'matomo-reports',
+      'variables' => array(
+        'data_url' => NULL,
+        'period' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function matomo_reports_form_alter(&$form, $form_state, $form_id) {
+  // Extend the form in "user/{userid}/edit/account".
+  if ($form_id == 'user_profile_form' && $form['#user_category'] == 'account' && user_access('access matomo reports') && (config_get('matomo_reports.settings', 'matomo_reports_token_auth') == '')) {
+    $account = $form['#user'];
+    $form['matomo_reports'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Matomo reports configuration'),
+      '#weight' => 3,
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    $form['matomo_reports']['matomo_reports_token_auth'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Matomo authentication string'),
+      '#default_value' => (!empty($account->data['matomo_reports_token_auth'])) ? $account->data['matomo_reports_token_auth'] : '',
+      '#size' => 40,
+      '#maxlength' => 40,
+      '#description' => t('Click the <strong>Settings</strong> link in your Matomo account, then the <strong>Users</strong> tab and copy and paste your personal <strong>token_auth</strong> value into this field. If anonymous users have view permissions in Matomo, you can set this value to <strong>anonymous</strong> or ask the Matomo server administrator for a token value.'),
+    );
+  }
+  elseif ($form_id == 'matomo_admin_settings_form') {
+    backdrop_set_title(t('Matomo tracking'));
+  }
+}
+
+/**
+ * Determine if user has any matomo reports permissions.
+ *
+ * @param array $arguments
+ *   Array of permissions.
+ *
+ * @return bool
+ *   True if user has any matomo reports permissions.
+ */
+function matomo_reports_any_access(array $arguments) {
+  foreach ($arguments as $perm) {
+    if (user_access($perm)) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_user_presave().
+ */
+function matomo_reports_user_presave(&$edit, $account, $category) {
+  if (isset($edit['matomo_reports_token_auth'])) {
+    $edit['data']['matomo_reports_token_auth'] = $edit['matomo_reports_token_auth'];
+  }
+}
+
+/**
+ * Return the $form that handles matomo reports config page.
+ *
+ * @param array $form_state
+ *   See form API.
+ *
+ * @return array
+ *   Matomo form fields.
+ */
+function matomo_reports_admin_settings_form(array $form_state) {
+  $config = config('matomo_reports.settings');
+  backdrop_set_title(t('Matomo reports'));
+  $matomo_installed = module_exists('matomo');
+  $form['#config'] = 'matomo_reports.settings';
+  $form['matomo_reports_server'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Matomo report server'),
+    '#weight' => 1,
+    '#collapsible' => TRUE,
+    '#collapsed' => $matomo_installed,
+  );
+  if ($matomo_installed) {
+    $form['matomo_reports_server']['#description'] = t('Leave blank to use the same URL set in Matomo tracking.');
+  }
+  $form['matomo_reports_server']['matomo_reports_url_http'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Matomo Server URL'),
+    '#default_value' => $config->get('matomo_reports_url_http'),
+    '#size' => 80,
+    '#maxlength' => 255,
+    '#required' => !$matomo_installed,
+    '#weight' => 1,
+    '#description' => t('The URL to your Matomo base directory. Example: "http://www.example.com/matomo/".'),
+  );
+  $form['matomo_reports_token'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Token auth'),
+    '#weight' => 5,
+    '#description' => t('To see matomo reports in Backdrop you need a <strong>token_auth</strong> value. You can find it in the  <strong>Users</strong> tab under the <strong>Settings</strong> link in your Matomo account or ask your Matomo server administrator.'),
+  );
+  $form['matomo_reports_token']['matomo_reports_token_auth'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Matomo authentication string'),
+    '#default_value' => $config->get('matomo_reports_token_auth'),
+    '#size' => 40,
+    '#maxlength' => 40,
+    '#description' => t('Leave blank if you prefer each user setting his own, or paste it here to have a global <strong>token_auth</strong>. If anonymous users have view permissions in Matomo you can set this value to <strong>anonymous</strong>. Users still need "Access Matomo reports" permission to see the reports in Backdrop.'),
+  );
+  $form['matomo_reports_sites'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Allowed sites'),
+    '#weight' => 10,
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#description' => t('List sites you want restrict your users access to.'),
+  );
+  $sites = matomo_reports_get_sites(check_plain($config->get('matomo_reports_token_auth')));
+  $form['matomo_reports_sites']['matomo_reports_allowed_sites'] = array(
+    '#type' => 'textfield',
+    '#weight' => 10,
+    '#collapsible' => TRUE,
+    '#default_value' => $config->get('matomo_reports_allowed_sites'),
+    '#collapsed' => TRUE,
+    '#description' => t('List accessible sites id separated by a comma. Example: "1,4,12". Leave blank to let users see all sites accessible on matomo server with current token auth (highly recommended in case of per user token auth).'),
+  );
+  if (is_array($sites) && count($sites)) {
+    if ($config->get('matomo_reports_token_auth') != '') {
+      $form['matomo_reports_sites']['matomo_reports_allowed_sites']['#description'] .= ' ' . t('Sites currently accessible with global token_auth are:');
+    }
+    else {
+      $form['matomo_reports_sites']['matomo_reports_allowed_sites']['#description'] .= ' ' . t('Sites currently accessible as anonymous are:');
+    }
+    foreach ($sites as $site) {
+      $form['matomo_reports_sites']['matomo_reports_allowed_sites']['#description'] .= '<br />' . (int) $site['idsite'] . ' - ' . check_plain($site['name']);
+    }
+  }
+  else {
+    $form['matomo_reports_sites']['matomo_reports_allowed_sites']['#description'] .= ' ' . t('No accessible sites are available with current global token auth. Please check your token auth is correct and that it has view permission on Matomo server.');
+  }
+  return system_settings_form($form);
+}
+
+/*
+ * Implements hook_form_validate().
+ *
+ * Validate the server url.
+ */
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function matomo_reports_admin_settings_form_validate($form, &$form_state) {
+  $matomo_url = $form_state['values']['matomo_reports_url_http'];
+  if ('/' != backdrop_substr($matomo_url, -1, 1)) {
+    $matomo_url = $matomo_url . '/';
+    $form_state['values']['matomo_reports_url_http'] = $matomo_url;
+  }
+//  $url = $matomo_url . 'matomo.php';
+  $url = $matomo_url;
+  $result = backdrop_http_request($url);
+  if ($result->code != 200) {
+    $replacements = array(
+      '@url' => check_url($url),
+      '@error' => $result->error,
+      '@code' => $result->code,
+    );
+    form_set_error('matomo_reports_url_http', t('The validation of "@url" failed with error "@error" (HTTP code @code).', $replacements));
+  }
+}
+
+/**
+ * Return a list of sites which statistic are accessible on matomo server.
+ *
+ * @param string $token_auth
+ *   Matomo server token auth.
+ *
+ * @return array
+ *   Array of sites returned from Matomo reports API.
+ */
+function matomo_reports_get_sites($token_auth) {
+  // TODO: shall I cache this?
+  $result = backdrop_http_request(matomo_reports_get_url() . 'index.php?module=API&method=SitesManager.getSitesWithAtLeastViewAccess&format=JSON&token_auth=' . $token_auth);
+  if (empty($result->data)) {
+    $sites = array();
+  }
+  else {
+    $sites = backdrop_json_decode($result->data);
+  }
+  return $sites;
+}
+
+/**
+ * Return a list of goals active on selected site.
+ *
+ * @param string $token_auth
+ *   Matomo server token auth.
+ * @param string $site
+ *   Selected site id.
+ *
+ * @return array
+ *   Goals returned from Matomo reports API.
+ */
+function matomo_reports_get_goals($token_auth, $site) {
+  // TODO: shall I cache this?
+  $result = backdrop_http_request(matomo_reports_get_url() . 'index.php?module=API&method=Goals.getGoals&idSite=' . (int) $site . '&format=JSON&token_auth=' . $token_auth);
+  if (empty($result->data)) {
+    $goals = array();
+  }
+  else {
+    $goals = backdrop_json_decode($result->data);
+  }
+  return $goals;
+}
+
+/**
+ * Return Matomo server url.
+ *
+ * @return string
+ *   Stored value of Matomo server URL.
+ */
+function matomo_reports_get_url() {
+  $url = config_get('matomo_reports.settings', 'matomo_reports_url_http');
+  if (empty($url)) {
+    if (module_exists('matomo')) {
+      $url = config_get('matomo.settings', 'url_https');
+      if (empty($url)) {
+        $url = config_get('matomo.settings', 'url_http');
+      }
+    }
+  }
+  if (empty($url)) {
+    backdrop_set_message(t('Matomo server url is missing or wrong. Please ask your administrator to check Matomo Reports configuration.'), 'warning', FALSE);
+  }
+  return $url;
+}

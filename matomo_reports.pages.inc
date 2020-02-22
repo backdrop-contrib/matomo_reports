@@ -2,11 +2,11 @@
 
 /**
  * @file
- * Reports callback for Piwik Reports.
+ * Reports callback for Matomo Reports.
  */
 
 /**
- * Return the $form that handles piwik reports.
+ * Return the $form that handles Matomo reports.
  *
  * @param array $form
  *   See form API.
@@ -15,18 +15,19 @@
  * @param string $report
  *   The report name.
  *
- * @return array
- *   See form API.
+ * @return array|null
+ *   See Form API.
  */
-function piwik_reports_reports($form, &$form_state, $report) {
+function matomo_reports_reports(array $form, array &$form_state, $report) {
+  $config = config('matomo_reports.settings');
   global $user;
 
-  $piwik_auth = (check_plain(variable_get('piwik_reports_token_auth', '') ? variable_get('piwik_reports_token_auth', '') : $user->data['piwik_reports_token_auth']));
-  $piwik_url = piwik_reports_get_url();
-  $sites = piwik_reports_get_sites($piwik_auth);
+  $matomo_auth = (check_plain($config->get('matomo_reports_token_auth') ? $config->get('matomo_reports_token_auth') : $user->data['matomo_reports_token_auth']));
+  $matomo_url = matomo_reports_get_url();
+  $sites = matomo_reports_get_sites($matomo_auth);
   if (empty($sites)) {
-    $_SESSION['piwik_reports_site'] == '';
-    drupal_set_message(t('You cannot access any data on the selected Piwik server. Please check authentication string and permissions with your Piwik server administrator.'), 'warning');
+    $_SESSION['matomo_reports_site'] = '';
+    backdrop_set_message(t('You cannot access any data on the selected Matomo server. Please check authentication string and permissions with your Matomo server administrator.'), 'warning');
     return;
   }
   $form['#attributes'] = array(
@@ -42,37 +43,37 @@ function piwik_reports_reports($form, &$form_state, $report) {
     3 => t('Last month'),
     4 => t('Last year'),
   );
-  $form['piwik_filters'] = array(
+  $form['matomo_filters'] = array(
     '#type' => 'fieldset',
     '#title' => t('Select site and time period'),
   );
-  $form['piwik_filters']['period'] = array(
+  $form['matomo_filters']['period'] = array(
     '#type' => 'select',
     '#title' => '',
-    '#default_value' => isset($_SESSION['piwik_reports_period']) ? $_SESSION['piwik_reports_period'] : 0,
+    '#default_value' => isset($_SESSION['matomo_reports_period']) ? $_SESSION['matomo_reports_period'] : 0,
     '#options' => $period,
   );
   $options = array();
-  $allowed_keys = explode(',', variable_get('piwik_reports_allowed_sites', ''));
+  $allowed_keys = explode(',', $config->get('matomo_reports_allowed_sites'));
   $session_site_exists = FALSE;
   foreach ($sites as $site) {
     if (empty($allowed_keys[0]) || in_array($site['idsite'], $allowed_keys)) {
       $options[$site['idsite']] = $site['name'];
     }
-    if (isset($_SESSION['piwik_reports_site']) && $_SESSION['piwik_reports_site'] == $site['idsite']) {
+    if (isset($_SESSION['matomo_reports_site']) && $_SESSION['matomo_reports_site'] == $site['idsite']) {
       $session_site_exists = TRUE;
     }
   }
-  if (!isset($_SESSION['piwik_reports_site']) || $_SESSION['piwik_reports_site'] == '' || !$session_site_exists || !in_array($_SESSION['piwik_reports_site'], $allowed_keys)) {
+  if (!isset($_SESSION['matomo_reports_site']) || $_SESSION['matomo_reports_site'] == '' || !$session_site_exists || !in_array($_SESSION['matomo_reports_site'], $allowed_keys)) {
     // When not set, set to first of the allowed sites.
-    $_SESSION['piwik_reports_site'] = $allowed_keys[0];
+    $_SESSION['matomo_reports_site'] = $allowed_keys[0];
   }
   if (count($options) > 1) {
-    $form['piwik_filters']['site'] = array(
+    $form['matomo_filters']['site'] = array(
       '#type' => 'select',
       '#title' => t('Site:'),
       '#weight' => -5,
-      '#default_value' => $_SESSION['piwik_reports_site'],
+      '#default_value' => $_SESSION['matomo_reports_site'],
       '#options' => $options,
     );
   }
@@ -80,11 +81,11 @@ function piwik_reports_reports($form, &$form_state, $report) {
     foreach ($options as $siteid => $sitename) {
       break;
     }
-    $form['piwik_filters']['site'] = array(
+    $form['matomo_filters']['site'] = array(
       '#type' => 'hidden',
       '#value' => $siteid,
     );
-    $form['piwik_filters']['sitename'] = array(
+    $form['matomo_filters']['sitename'] = array(
       '#type' => 'textfield',
       '#title' => t('Site:'),
       '#weight' => -5,
@@ -92,31 +93,31 @@ function piwik_reports_reports($form, &$form_state, $report) {
       '#value' => $sitename,
       '#disabled' => TRUE,
     );
-    $form['piwik_filters']['period']['#attributes'] = ['onchange' => 'this.form.submit();'];
+    $form['matomo_filters']['period']['#attributes'] = array('onchange' => 'this.form.submit();');
   }
-  $form['piwik_filters']['submit'] = array(
+  $form['matomo_filters']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Filter'),
     '#weight' => 15,
   );
 
-  $piwik_site_id = $_SESSION['piwik_reports_site'];
-  $period = isset($_SESSION['piwik_reports_period']) ? $_SESSION['piwik_reports_period'] : 0;
+  $matomo_site_id = $_SESSION['matomo_reports_site'];
+  $period = isset($_SESSION['matomo_reports_period']) ? $_SESSION['matomo_reports_period'] : 0;
 
   if ($period == 1) {
     // Special handling for "yesterday" = 1.
     // The yesterday date value is required.
-    $date = _piwik_reports_select_period($period);
+    $date = _matomo_reports_select_period($period);
   }
   else {
     // Otherwise it returns the today date value.
-    $date = _piwik_reports_select_period(0);
+    $date = _matomo_reports_select_period(0);
   }
-  $period_name = _piwik_reports_get_period_name($period);
+  $period_name = _matomo_reports_get_period_name($period);
 
   // Create an array of URL parameters for easier maintenance.
   $data_params[0] = array();
-  $data_params[0]['idSite'] = $piwik_site_id;
+  $data_params[0]['idSite'] = $matomo_site_id;
   $data_params[0]['date'] = $date;
   $data_params[0]['period'] = $period_name;
   $data_params[0]['disableLink'] = 1;
@@ -125,8 +126,8 @@ function piwik_reports_reports($form, &$form_state, $report) {
   $data_params[0]['disableLink'] = 1;
   $data_params[0]['widget'] = 1;
 
-  if (!empty($piwik_auth)) {
-    $data_params[0]['token_auth'] = $piwik_auth;
+  if (!empty($matomo_auth)) {
+    $data_params[0]['token_auth'] = $matomo_auth;
   }
 
   switch ($report) {
@@ -285,9 +286,9 @@ function piwik_reports_reports($form, &$form_state, $report) {
       break;
 
     case 'goals':
-      $goals = piwik_reports_get_goals($piwik_auth, $_SESSION['piwik_reports_site']);
+      $goals = matomo_reports_get_goals($matomo_auth, $_SESSION['matomo_reports_site']);
       if (count($goals) == 0) {
-        $empty_text = t('No goals have been set. Check with your Piwik server administrator if you desire some.');
+        $empty_text = t('No goals have been set. Check with your Matomo server administrator if you desire some.');
         $title[0] = NULL;
         break;
       }
@@ -303,17 +304,28 @@ function piwik_reports_reports($form, &$form_state, $report) {
       }
       break;
   }
+dpm($data_params, '$data_params');
   // Build the data URL with all params and urlencode it.
+  $theme_args = array();
   foreach ($data_params as $key => $data) {
+dpm($data, '$data');
+//      <iframe src="https://matomo.techccessible.com/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Dashboard&actionToWidgetize=index&idSite=22&period=week&date=yesterday" frameborder="0" marginheight="0" marginwidth="0" width="100%" height="100%"></iframe>
+    $data['moduleToWidgetize'] = 'Dashboard';
+    $data['actionToWidgetize'] = 'index';
+    unset($data['disableLink']);
+    unset($data['widget']);
+    unset($data['filter_limit']);
     $theme_args['data_url'][] = array(
-      'url' => $piwik_url . 'index.php?' . drupal_http_build_query($data),
+//      'url' => $matomo_url . 'index.php?' . backdrop_http_build_query($data),
+      'url' => 'https://matomo.techccessible.com/index.php?module=Widgetize&action=iframe&moduleToWidgetize=Dashboard&actionToWidgetize=index&idSite=22&period=week&date=yesterday&token_auth=6f2eac9d3f375ec74886fa9d1289742c',
       'title' => $title[$key],
       'iframe_height' => (isset($iframe_height[$key]) && $iframe_height[$key] > 0 ? $iframe_height[$key] : 400),
       'empty_text' => (isset($empty_text) ? $empty_text : NULL),
     );
   }
   // Render HTML code.
-  $output = theme('piwik_reports', $theme_args);
+dpm($theme_args, '$theme_args');
+  $output = theme('matomo_reports', $theme_args);
   $form['content'] = array(
     '#type' => 'item',
     '#markup' => $output,
@@ -324,14 +336,13 @@ function piwik_reports_reports($form, &$form_state, $report) {
 /**
  * Reports form submit function.
  */
-function piwik_reports_reports_submit($form, &$form_state) {
-  $_SESSION['piwik_reports_period'] = $form_state['values']['period'];
-  $_SESSION['piwik_reports_site'] = $form_state['values']['site'];
+function matomo_reports_reports_submit($form, &$form_state) {
+  $_SESSION['matomo_reports_period'] = $form_state['values']['period'];
+  $_SESSION['matomo_reports_site'] = $form_state['values']['site'];
 }
 
 /**
- * Helper function to return the starting and ending dates according to the
- * selected period.
+ * Returns the starting and ending dates according to the selected period.
  *
  * @param int $period
  *   Selected period.
@@ -339,7 +350,7 @@ function piwik_reports_reports_submit($form, &$form_state) {
  * @return string
  *   Formatted date.
  */
-function _piwik_reports_select_period($period) {
+function _matomo_reports_select_period($period) {
   switch ($period) {
     case 0:
       $date = date("Y-m-d");
@@ -377,7 +388,7 @@ function _piwik_reports_select_period($period) {
  * @return string
  *   Name of period.
  */
-function _piwik_reports_get_period_name($period) {
+function _matomo_reports_get_period_name($period) {
   // Possible periods are day, week, month, year.
   switch ($period) {
     case 0:

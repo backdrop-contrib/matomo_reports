@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Installation file for Matomo Reports module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function matomo_reports_uninstall() {
+  config_clear('matomo_reports.settings', 'matomo_reports_allowed_sites');
+  config_clear('matomo_reports.settings', 'matomo_reports_token_auth');
+  config_clear('matomo_reports.settings', 'matomo_reports_url_http');
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function matomo_reports_update_1000() {
+  $config = config('matomo_reports.settings');
+  $config->set('matomo_reports_token_auth', update_variable_get('matomo_reports_token_auth', ''));
+  $config->set('matomo_reports_url_http', update_variable_get('matomo_reports_url_http', ''));
+  $config->set('matomo_reports_allowed_sites', update_variable_get('matomo_reports_allowed_sites', ''));
+  update_variable_del('matomo_reports_token_auth');
+  update_variable_del('matomo_reports_url_http');
+  update_variable_del('matomo_reports_allowed_sites');
+}
+
+/**
+ * Implements hook_install().
+ */
+function matomo_reports_install() {
+  // Dynamically generated variable data was detected.
+}
