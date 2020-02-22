@@ -6,6 +6,9 @@ from your Matomo server.
 
 Project homepage: https://github.com/backdrop-contrib/matomo_reports
 
+For information about Matomo, see https://matomo.org/
+For Matomo's FAQ, see https://matomo.org/faq/
+
 
 Installation
 ------------
