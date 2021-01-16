@@ -3,4 +3,4 @@ description = Adds Matomo reports to Drupal reports section.
 backdrop = 1.x
 type = module
 package = Statistics
-configure = admin/config/system/matomo_reports
+configure = admin/config/system/matomo/reports

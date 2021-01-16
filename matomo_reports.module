@@ -222,7 +222,17 @@ function matomo_reports_menu() {
     'weight' => 4,
     'type' => MENU_LOCAL_TASK,
   );
-  // If matomo is installed, group with it, otherwise not.
+
+  // Add the menu item for the administrative configration page.
+  $items['admin/config/system/matomo/reports'] = array(
+    'title' => 'Matomo Reports',
+    'description' => 'Configure the settings for your Matomo reports.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('matomo_reports_admin_settings_form'),
+    'access arguments' => array('administer matomo reports'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  // If the Matomo Analytics module is installed, group this module with it.
   if (module_exists('matomo')) {
     $items['admin/config/system/matomo/tracking'] = array(
       'title' => 'Tracking',
@@ -235,25 +245,8 @@ function matomo_reports_menu() {
       'file' => 'matomo.admin.inc',
       'weight' => -10,
     );
-    $items['admin/config/system/matomo/reports'] = array(
-      'title' => 'Reports',
-      'description' => 'Configure the settings for your Matomo reports.',
-      'page callback' => 'backdrop_get_form',
-      'page arguments' => array('matomo_reports_admin_settings_form'),
-      'access arguments' => array('administer matomo reports'),
-      'type' => MENU_NORMAL_ITEM,
-      'weight' => 10,
-    );
-  }
-  else {
-    $items['admin/config/system/matomo_reports'] = array(
-      'title' => 'Matomo Reports',
-      'description' => 'Configure the settings for your Matomo reports.',
-      'page callback' => 'backdrop_get_form',
-      'page arguments' => array('matomo_reports_admin_settings_form'),
-      'access arguments' => array('administer matomo reports'),
-      'type' => MENU_NORMAL_ITEM,
-    );
+    $items['admin/config/system/matomo/reports']['title'] = 'Reports';
+    $items['admin/config/system/matomo/reports']['weight'] = 10;
   }
   return $items;
 }
