@@ -412,9 +412,9 @@ function matomo_reports_any_access(array $arguments) {
 /**
  * Implements hook_user_presave().
  */
-function matomo_reports_user_presave(&$edit, $account, $category) {
-  if (isset($edit['matomo_reports_token_auth'])) {
-    $edit['data']['matomo_reports_token_auth'] = $edit['matomo_reports_token_auth'];
+function matomo_reports_user_presave($account) {
+  if (isset($account->matomo_reports_token_auth)) {
+    $account->data['matomo_reports_token_auth'] = $account->matomo_reports_token_auth;
   }
 }
 
