@@ -1,5 +1,5 @@
 name = Matomo Reports
-description = Adds Matomo reports to Drupal reports section.
+description = Adds reports for a Matomo installation to the Reports section.
 backdrop = 1.x
 type = module
 package = Statistics

@@ -1,8 +1,9 @@
 Matomo Reports
 ==============
 
-This module adds a Matomo Reports section and imports key traffic information
-from your Matomo server.
+This module adds reports for a Matomo installation to the Reports section of
+your Backdrop CMS site and imports key traffic information from your Matomo
+server.
 
 Project homepage: https://github.com/backdrop-contrib/matomo_reports
 
@@ -17,13 +18,13 @@ Installation
   https://backdropcms.org/guide/modules.
 
 - Visit the configuration page at Administration > Configuration > System >
-  Matomo Reports (admin/config/system/matomo_reports) and enter the required
+  Matomo Reports (admin/config/system/matomo/reports) and enter the required
   information. (If you have the Matomo Analytics module installed, it is at
-  Administration > Configuration > System > Matomo
-  (admin/config/system/matomo).)
+  Administration > Configuration > System > Matomo > Reports (the path is the
+  same).)
 
 - Add your Matomo reports token_auth either globally (at
-  admin/config/system/matomo) or individually (in each user profile)
+  admin/config/system/matomo/reports) or individually (in each user profile)
 
 - Enjoy ;)
 
@@ -32,21 +33,21 @@ Documentation
 -------------
 
 Reports
-This modules provides some of the Matomo reports directly in your Drupal
-site. Just follow the installation instructions and go to 
-/admin/reports/matomo_reports.
+- This modules provides some of the Matomo reports directly in your Backdrop CMS
+  site. Just follow the installation instructions and go to
+  admin/config/system/matomo/reports.
 
 Multisite
-Matomo reports will show statistics of every site the token_auth has view
-permissions on the Matomo server. Administrators can limit access to only to
-some of the allowed sites.
+- Matomo Reports will show statistics of every site the token_auth has view
+  permissions on the Matomo server. Administrators can limit access to only to
+  some of the allowed sites.
 
 Block
-A Matomo page report block is available for in-page statistics.
+- A Matomo Report block is available for in-page statistics.
 
 Matomo Analytics
-Matomo Analytics (https://github.com/backdrop-contrib/matomo) is not a
-dependency, but a Matomo server is required to track your site.
+- Matomo Analytics (https://backdropcms.org/project/matomo) is not a dependency,
+  but a Matomo server is required to track your site.
 
 
 Issues

@@ -293,7 +293,7 @@ function matomo_reports_block_view($delta = '') {
     case 'matomo_page_report':
       $block['subject'] = t('Matomo Page Statistics');
       if (!module_exists('matomo')) {
-        $block['content'] = t('To use this block you need to install <a href="!url">Matomo</a> module', array('!url' => 'http://www.drupal.org/project/matomo'));
+        $block['content'] = t('To use this block you need to install <a href="!url">Matomo</a> module', array('!url' => 'https://backdropcms.org/project/matomo'));
         return $block;
       }
       if ($router_item = menu_get_item()) {
@@ -493,14 +493,8 @@ function matomo_reports_admin_settings_form(array $form_state) {
   return system_settings_form($form);
 }
 
-/*
- * Implements hook_form_validate().
- *
- * Validate the server url.
- */
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Implements validation for the admin settings form.
  */
 function matomo_reports_admin_settings_form_validate($form, &$form_state) {
   $matomo_url = $form_state['values']['matomo_reports_url_http'];
